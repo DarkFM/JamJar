@@ -8,44 +8,96 @@ void PortF_init(void);
 char Receive_Char(void);
 void Send_Char(unsigned char c);
 void print_string(unsigned char *c);
+void SysTick_init(void);
+void SysTick_wait_time(unsigned long time);
 
 
 int main()
 { 
     UART_Init();
     PortF_init();
-    char c;
-    
+    SysTick_init();
+    char c[20];    
+    char *ptr = c;
+    char *start = c;
+      
+ 
   while(1){
     
+    
+    for(int i=0; i < 20; i++) {
+      c[i] = '0';
+    }
+    ptr = start; 
+    int increment = 0;
     print_string("Please enter either, \'b\', \'r\', \'g\': \n\r");
-    c = Receive_Char(); // wait for user to enter a value
-    Send_Char(c);       // send this value to pc via UART;
+    
+    while(/*ptr != 0 && */ *ptr != '\r' && increment < 20 ){
+    // c = Receive_Char(); // wait for user to enter a value
+    *ptr = Receive_Char();       // receive this value from the PC via UART, and store in array.
+    Send_Char(*(ptr));        // send this char to PC so it can be printed, then increment pointer
+    increment++;
+    if(*ptr != '\r')
+      ptr++;
+    }
+    
+    ptr = start;        // reset the string pointer back to original position
     print_string("\n");
-    switch(c) { 
-    case 'r':
+    
+    for(int i= 0; i < increment-1; i++){
+      
+    switch(*ptr++) { 
+    case 'c':
+    case 'l':
+    case 'i':
+    case 'n':
+    case 'z':
+    case 'R':
+    case 'x':      
+    case 'r':      
+      SysTick_wait_time(8000000);
       GPIO_PORTF_DATA_R &= 0;   //CLEAR BITS
       GPIO_PORTF_DATA_R |= (1u << 1);   // make led red
       if(GPIO_PORTF_DATA_R & (1u << 1) != 0)
          GPIO_PORTF_DATA_R &= ~(1u << 1);
       break;
-    case 'g':
+    case 't':
+    case 'o':
+    case 'a':
+    case '.':      
+    case 'm':
+    case ',':
+    case 'G':      
+    case 'g':      
+       SysTick_wait_time(8000000);
       GPIO_PORTF_DATA_R &= 0;
       GPIO_PORTF_DATA_R |= (1u << 3); // make led green
         if(GPIO_PORTF_DATA_R & (1u << 3) != 0)
          GPIO_PORTF_DATA_R &= ~(1u << 3);
       break;
+    case 'e':
+    case 'y':
+    case 'u':
+    case 'p':
+    case 's':      
     case 'b':
+    case 'B':      
+       SysTick_wait_time(8000000);
       GPIO_PORTF_DATA_R &= 0;
       GPIO_PORTF_DATA_R |= (1u << 2);   // make led blue
         if(GPIO_PORTF_DATA_R & (1u << 2) != 0)
          GPIO_PORTF_DATA_R &= ~(1u << 2);
       break;
     default:
+       SysTick_wait_time(8000000);
       GPIO_PORTF_DATA_R |= (1u << 1)| (1u << 2)| (1u << 3);   // make led white
-      break;
-  
+       print_string("!");
+       break;
+        }
     }
+  
+    print_string("\n");
+  
   }
 }
 
@@ -119,9 +171,24 @@ char Receive_Char(void){        // reviece data from pc
   
 }
 
-void print_string(unsigned char *c)
+void print_string(unsigned char *c)     // sends a string to the pc
 {
   while(*c){
     Send_Char(*(c++));
   }
+}
+
+void SysTick_init(void) {
+  NVIC_ST_CTRL_R &= (0u << 0);  // turn off enable bit before we use the systick
+  NVIC_ST_CURRENT_R  = 0;       // This clears the current register
+  NVIC_ST_CTRL_R |= (0x05);  // turn on enable bit and also set CLK_SRC to system clock 16Mhz
+  
+}
+
+void SysTick_wait_time(unsigned long time) {
+  
+  // setting the reload register so counter can count down from this value
+  NVIC_ST_RELOAD_R = time-1; // if time is 16 million. this means the counter will take 1 sec to count to zero if system clock is 16MHz
+  while((NVIC_ST_CTRL_R & 0x00010000) == 0){   // checks if the counter is done counting.
+  }  
 }
