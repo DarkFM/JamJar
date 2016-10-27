@@ -132,7 +132,7 @@
         </option>
         <option>
           <name>OGUseCmsis</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>OGUseCmsisDspLib</name>
@@ -278,7 +278,7 @@
         </option>
         <option>
           <name>CCRequirePrototypes</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CCMultibyteSupport</name>
@@ -316,6 +316,7 @@
           <name>CCIncludePath2</name>
           <state>C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5\arm\CMSIS\Include</state>
           <state>C:\TI-CMSIS-Devices-8636\TI\LM4F\Include</state>
+          <state>C:\ti\TivaWare_C_Series-2.1.3.156\inc</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -726,7 +727,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state></state>
+          <state>$TOOLKIT_DIR$\config\linker\TexasInstruments\TM4C123GH6.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -786,7 +787,7 @@
         </option>
         <option>
           <name>IlinkProgramEntryLabel</name>
-          <state></state>
+          <state>__iar_program_start</state>
         </option>
         <option>
           <name>DoFill</name>
@@ -1921,6 +1922,9 @@
       <data/>
     </settings>
   </configuration>
+  <file>
+    <name>$PROJ_DIR$\cstartup_M.c</name>
+  </file>
   <file>
     <name>$PROJ_DIR$\main.c</name>
   </file>
