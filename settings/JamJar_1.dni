@@ -14,7 +14,7 @@ LMIFTDIfoundProbes=
 LMI_ResetMode=0x00000001
 LMI_LeaveTargetRunning=0x00000000
 [DebugChecksum]
-Checksum=1945649106
+Checksum=500682271
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -63,6 +63,10 @@ ShowSource=1
 [Simulator]
 Freq=10000000
 MultiCoreRunAll=1
+[Disassemble mode]
+mode=0
+[Breakpoints]
+Count=0
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -70,10 +74,6 @@ Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
-[Disassemble mode]
-mode=0
-[Breakpoints]
-Count=0
 [Aliases]
 Count=0
 SuppressDialog=0

@@ -1,17 +1,17 @@
 ###############################################################################
 #
-# IAR ELF Linker V7.70.2.11706/W32 for ARM                01/Nov/2016  13:01:29
+# IAR ELF Linker V7.70.2.11706/W32 for ARM                01/Nov/2016  14:56:54
 # Copyright 2007-2016 IAR Systems AB.
 #
-#    Output file  =  C:\TiVA C Projects\Practice1- UART\Debug\Exe\JamJar_1.out
-#    Map file     =  C:\TiVA C Projects\Practice1- UART\Debug\List\JamJar_1.map
+#    Output file  =  C:\TiVA C Projects\JamJar\Debug\Exe\JamJar_1.out
+#    Map file     =  C:\TiVA C Projects\JamJar\Debug\List\JamJar_1.map
 #    Command line =  
-#        "C:\TiVA C Projects\Practice1- UART\Debug\Obj\cstartup_M.o" "C:\TiVA C
-#        Projects\Practice1- UART\Debug\Obj\main.o" -o "C:\TiVA C
-#        Projects\Practice1- UART\Debug\Exe\JamJar_1.out" --redirect
-#        _Printf=_PrintfFull --redirect _Scanf=_ScanfFull --map "C:\TiVA C
-#        Projects\Practice1- UART\Debug\List\JamJar_1.map" --config "C:\Program
-#        Files (x86)\IAR Systems\Embedded Workbench
+#        "C:\TiVA C Projects\JamJar\Debug\Obj\cstartup_M.o" "C:\TiVA C
+#        Projects\JamJar\Debug\Obj\main.o" -o "C:\TiVA C
+#        Projects\JamJar\Debug\Exe\JamJar_1.out" --redirect _Printf=_PrintfFull
+#        --redirect _Scanf=_ScanfFull --map "C:\TiVA C
+#        Projects\JamJar\Debug\List\JamJar_1.map" --config "C:\Program Files
+#        (x86)\IAR Systems\Embedded Workbench
 #        7.5\arm\config\linker\TexasInstruments\TM4C123GH6.icf" --semihosting
 #        --entry __iar_program_start --vfe
 #
@@ -35,51 +35,53 @@ __SystemLibrary = DLib
 
   Section          Kind        Address    Size  Object
   -------          ----        -------    ----  ------
-"A0":                                     0xc8
-  .intvec          const    0x00000000    0xc8  cstartup_M.o [1]
-                          - 0x000000c8    0xc8
+"A0":                                    0x110
+  .intvec          const    0x00000000   0x110  cstartup_M.o [1]
+                          - 0x00000110   0x110
 
-"P1":                                    0x35c
-  .text            ro code  0x000000c8   0x244  main.o [1]
-  .text            ro code  0x0000030c    0x40  zero_init3.o [5]
-  .text            ro code  0x0000034c    0x28  data_init.o [5]
-  .text            ro code  0x00000374    0x22  fpinit_M.o [4]
-  .iar.init_table  const    0x00000398    0x10  - Linker created -
-  .text            ro code  0x000003a8     0x2  cstartup_M.o [1]
-  .text            ro code  0x000003ac    0x1a  cmain.o [5]
-  .text            ro code  0x000003c6     0x4  low_level_init.o [3]
-  .text            ro code  0x000003ca     0x4  exit.o [3]
-  .text            ro code  0x000003ce     0x2  cstartup_M.o [1]
-  .text            ro code  0x000003d0     0xa  cexit.o [5]
-  .text            ro code  0x000003da     0x2  cstartup_M.o [1]
-  .text            ro code  0x000003dc    0x14  exit.o [6]
-  .text            ro code  0x000003f0    0x10  cstartup_M.o [1]
-  .text            ro code  0x00000400     0x2  cstartup_M.o [1]
-  .text            ro code  0x00000402     0x2  cstartup_M.o [1]
-  .text            ro code  0x00000404     0x2  cstartup_M.o [1]
-  .text            ro code  0x00000406     0x2  cstartup_M.o [1]
-  .text            ro code  0x00000408     0x2  cstartup_M.o [1]
-  .text            ro code  0x0000040a     0x2  cstartup_M.o [1]
-  .text            ro code  0x0000040c     0x2  cstartup_M.o [1]
-  .text            ro code  0x0000040e     0x2  cstartup_M.o [1]
-  .text            ro code  0x00000410     0x2  cstartup_M.o [1]
-  .text            ro code  0x00000412     0x2  cstartup_M.o [1]
-  .text            ro code  0x00000414     0x2  cstartup_M.o [1]
-  .text            ro code  0x00000416     0x2  cstartup_M.o [1]
-  .text            ro code  0x00000418     0x2  cstartup_M.o [1]
-  .text            ro code  0x0000041a     0x2  cstartup_M.o [1]
-  .text            ro code  0x0000041c     0x2  cstartup_M.o [1]
-  .text            ro code  0x0000041e     0x2  cstartup_M.o [1]
-  .text            ro code  0x00000420     0x2  cstartup_M.o [1]
-  .text            ro code  0x00000422     0x2  cstartup_M.o [1]
-  .rodata          const    0x00000424     0x0  zero_init3.o [5]
-                          - 0x00000424   0x35c
+"P1":                                    0x3ca
+  .text            ro code  0x00000110   0x2b0  main.o [1]
+  .text            ro code  0x000003c0    0x40  zero_init3.o [5]
+  .text            ro code  0x00000400    0x28  data_init.o [5]
+  .text            ro code  0x00000428    0x22  fpinit_M.o [4]
+  .iar.init_table  const    0x0000044c    0x10  - Linker created -
+  .text            ro code  0x0000045c     0x2  cstartup_M.o [1]
+  .text            ro code  0x00000460    0x1a  cmain.o [5]
+  .text            ro code  0x0000047a     0x4  low_level_init.o [3]
+  .text            ro code  0x0000047e     0x4  exit.o [3]
+  .text            ro code  0x00000482     0x2  cstartup_M.o [1]
+  .text            ro code  0x00000484     0xa  cexit.o [5]
+  .text            ro code  0x0000048e     0x2  cstartup_M.o [1]
+  .text            ro code  0x00000490    0x14  exit.o [6]
+  .text            ro code  0x000004a4    0x10  cstartup_M.o [1]
+  .text            ro code  0x000004b4     0x2  cstartup_M.o [1]
+  .text            ro code  0x000004b6     0x2  cstartup_M.o [1]
+  .text            ro code  0x000004b8     0x2  cstartup_M.o [1]
+  .text            ro code  0x000004ba     0x2  cstartup_M.o [1]
+  .text            ro code  0x000004bc     0x2  cstartup_M.o [1]
+  .text            ro code  0x000004be     0x2  cstartup_M.o [1]
+  .text            ro code  0x000004c0     0x2  cstartup_M.o [1]
+  .text            ro code  0x000004c2     0x2  cstartup_M.o [1]
+  .text            ro code  0x000004c4     0x2  cstartup_M.o [1]
+  .text            ro code  0x000004c6     0x2  cstartup_M.o [1]
+  .text            ro code  0x000004c8     0x2  cstartup_M.o [1]
+  .text            ro code  0x000004ca     0x2  cstartup_M.o [1]
+  .text            ro code  0x000004cc     0x2  cstartup_M.o [1]
+  .text            ro code  0x000004ce     0x2  cstartup_M.o [1]
+  .text            ro code  0x000004d0     0x2  cstartup_M.o [1]
+  .text            ro code  0x000004d2     0x2  cstartup_M.o [1]
+  .text            ro code  0x000004d4     0x2  cstartup_M.o [1]
+  .text            ro code  0x000004d6     0x2  cstartup_M.o [1]
+  .text            ro code  0x000004d8     0x2  cstartup_M.o [1]
+  .rodata          const    0x000004da     0x0  zero_init3.o [5]
+                          - 0x000004da   0x3ca
 
-"P2", part 1 of 2:                         0x4
-  .bss             zero     0x20000000     0x1  main.o [1]
-  .bss             zero     0x20000001     0x1  main.o [1]
-  .bss             zero     0x20000002     0x1  main.o [1]
-                          - 0x20000003     0x3
+"P2", part 1 of 2:                         0x8
+  .bss             zero     0x20000000     0x4  main.o [1]
+  .bss             zero     0x20000004     0x1  main.o [1]
+  .bss             zero     0x20000005     0x1  main.o [1]
+  .bss             zero     0x20000006     0x1  main.o [1]
+                          - 0x20000007     0x7
 
 "P2", part 2 of 2:                      0x1000
   CSTACK                    0x20000008  0x1000  <Block>
@@ -94,8 +96,8 @@ __SystemLibrary = DLib
           Address     Size
           -------     ----
 Zero (__iar_zero_init3)
-    1 destination range, total size 0x3:
-          0x20000000   0x3
+    1 destination range, total size 0x7:
+          0x20000000   0x7
 
 
 
@@ -105,11 +107,11 @@ Zero (__iar_zero_init3)
 
     Module            ro code  ro data  rw data
     ------            -------  -------  -------
-C:\TiVA C Projects\Practice1- UART\Debug\Obj: [1]
-    cstartup_M.o           58      200
-    main.o                580                 3
+C:\TiVA C Projects\JamJar\Debug\Obj: [1]
+    cstartup_M.o           60      272
+    main.o                688                 7
     -------------------------------------------
-    Total:                638      200        3
+    Total:                748      272        7
 
 command line: [2]
     -------------------------------------------
@@ -142,76 +144,79 @@ shb_l.a: [6]
     Gaps                    2        2
     Linker created                  16    4 096
 -----------------------------------------------
-    Grand Total:          842      218    4 099
+    Grand Total:          952      290    4 103
 
 
 *******************************************************************************
 *** ENTRY LIST
 ***
 
-Entry                      Address  Size  Type      Object
------                      -------  ----  ----      ------
-.iar.init_table$$Base   0x00000398         --   Gb  - Linker created -
-.iar.init_table$$Limit  0x000003a8         --   Gb  - Linker created -
-?main                   0x000003ad        Code  Gb  cmain.o [5]
-BusFault_Handler        0x00000401   0x2  Code  Wk  cstartup_M.o [1]
-CSTACK$$Base            0x20000008         --   Gb  - Linker created -
-CSTACK$$Limit           0x20001008         --   Gb  - Linker created -
-DebugMon_Handler        0x00000407   0x2  Code  Wk  cstartup_M.o [1]
-GPIOPortA_Handler       0x0000040d   0x2  Code  Wk  cstartup_M.o [1]
-GPIOPortB_Handler       0x0000040f   0x2  Code  Wk  cstartup_M.o [1]
-GPIOPortC_Handler       0x00000411   0x2  Code  Wk  cstartup_M.o [1]
-GPIOPortD_Handler       0x00000413   0x2  Code  Wk  cstartup_M.o [1]
-GPIOPortE_Handler       0x00000415   0x2  Code  Wk  cstartup_M.o [1]
-GPIOPortF_Handler       0x0000041f   0x2  Code  Wk  cstartup_M.o [1]
-HardFault_Handler       0x000003cf   0x2  Code  Wk  cstartup_M.o [1]
-I2C0_Handler            0x0000041d   0x2  Code  Wk  cstartup_M.o [1]
-MemManage_Handler       0x000003db   0x2  Code  Wk  cstartup_M.o [1]
-NMI_Handler             0x000003a9   0x2  Code  Wk  cstartup_M.o [1]
-PWM0Fault_Handler       0x00000423   0x2  Code  Wk  cstartup_M.o [1]
-PendSV_Handler          0x00000409   0x2  Code  Wk  cstartup_M.o [1]
-PortF_init              0x0000023d  0x30  Code  Gb  main.o [1]
-Receive_Char            0x0000026d  0x10  Code  Gb  main.o [1]
-Region$$Table$$Base     0x00000398         --   Gb  - Linker created -
-Region$$Table$$Limit    0x000003a8         --   Gb  - Linker created -
-SSI0_Handler            0x0000041b   0x2  Code  Wk  cstartup_M.o [1]
-SVC_Handler             0x00000405   0x2  Code  Wk  cstartup_M.o [1]
-SysTick_Handler         0x0000040b   0x2  Code  Wk  cstartup_M.o [1]
-SysTick_init            0x0000027d  0x1e  Code  Gb  main.o [1]
-SysTick_wait_time       0x0000029b  0x10  Code  Gb  main.o [1]
-UART0_Handler           0x00000417   0x2  Code  Wk  cstartup_M.o [1]
-UART1_Handler           0x00000419   0x2  Code  Wk  cstartup_M.o [1]
-UART2_Handler           0x00000421   0x2  Code  Wk  cstartup_M.o [1]
-UART_Init               0x000001a9  0x94  Code  Gb  main.o [1]
-UsageFault_Handler      0x00000403   0x2  Code  Wk  cstartup_M.o [1]
-__cmain                 0x000003ad        Code  Gb  cmain.o [5]
-__exit                  0x000003dd  0x14  Code  Gb  exit.o [6]
-__iar_data_init3        0x0000034d  0x28  Code  Gb  data_init.o [5]
-__iar_init_vfp          0x00000375        Code  Gb  fpinit_M.o [4]
-__iar_program_start     0x000003f1  0x10  Code  Gb  cstartup_M.o [1]
-__iar_zero_init3        0x0000030d  0x40  Code  Gb  zero_init3.o [5]
-__low_level_init        0x000003c7   0x4  Code  Gb  low_level_init.o [3]
-__vector_table          0x00000000  0xc8  Data  Gb  cstartup_M.o [1]
-_call_main              0x000003b9        Code  Gb  cmain.o [5]
-_exit                   0x000003d1        Code  Gb  cexit.o [5]
-_main                   0x000003c3        Code  Gb  cmain.o [5]
-command_byte            0x20000000   0x1  Data  Gb  main.o [1]
-exit                    0x000003cb   0x4  Code  Gb  exit.o [3]
-main                    0x000000c9  0xe0  Code  Gb  main.o [1]
-para1                   0x20000001   0x1  Data  Gb  main.o [1]
-para2                   0x20000002   0x1  Data  Gb  main.o [1]
+Entry                      Address   Size  Type      Object
+-----                      -------   ----  ----      ------
+.iar.init_table$$Base   0x0000044c          --   Gb  - Linker created -
+.iar.init_table$$Limit  0x0000045c          --   Gb  - Linker created -
+?main                   0x00000461         Code  Gb  cmain.o [5]
+ADC0SS0_Handler         0x000004d5    0x2  Code  Wk  cstartup_M.o [1]
+ADC0SS3_Handler         0x00000317   0x3a  Code  Gb  main.o [1]
+ADC1SS3_Handler         0x000004d7    0x2  Code  Wk  cstartup_M.o [1]
+ADC_result              0x20000000    0x4  Data  Lc  main.o [1]
+BusFault_Handler        0x000004b5    0x2  Code  Wk  cstartup_M.o [1]
+CSTACK$$Base            0x20000008          --   Gb  - Linker created -
+CSTACK$$Limit           0x20001008          --   Gb  - Linker created -
+DebugMon_Handler        0x000004bb    0x2  Code  Wk  cstartup_M.o [1]
+GPIOPortA_Handler       0x000004c1    0x2  Code  Wk  cstartup_M.o [1]
+GPIOPortB_Handler       0x000004c3    0x2  Code  Wk  cstartup_M.o [1]
+GPIOPortC_Handler       0x000004c5    0x2  Code  Wk  cstartup_M.o [1]
+GPIOPortD_Handler       0x000004c7    0x2  Code  Wk  cstartup_M.o [1]
+GPIOPortE_Handler       0x000004c9    0x2  Code  Wk  cstartup_M.o [1]
+GPIOPortF_Handler       0x000004d3    0x2  Code  Wk  cstartup_M.o [1]
+HardFault_Handler       0x00000483    0x2  Code  Wk  cstartup_M.o [1]
+I2C0_Handler            0x000004d1    0x2  Code  Wk  cstartup_M.o [1]
+MemManage_Handler       0x0000048f    0x2  Code  Wk  cstartup_M.o [1]
+NMI_Handler             0x0000045d    0x2  Code  Wk  cstartup_M.o [1]
+PWM0Fault_Handler       0x000004d9    0x2  Code  Wk  cstartup_M.o [1]
+PendSV_Handler          0x000004bd    0x2  Code  Wk  cstartup_M.o [1]
+PortF_init              0x000002a9   0x30  Code  Gb  main.o [1]
+Receive_Char            0x000002d9   0x10  Code  Gb  main.o [1]
+Region$$Table$$Base     0x0000044c          --   Gb  - Linker created -
+Region$$Table$$Limit    0x0000045c          --   Gb  - Linker created -
+SSI0_Handler            0x000004cf    0x2  Code  Wk  cstartup_M.o [1]
+SVC_Handler             0x000004b9    0x2  Code  Wk  cstartup_M.o [1]
+SysTick_Handler         0x000004bf    0x2  Code  Wk  cstartup_M.o [1]
+SysTick_init            0x000002e9   0x1e  Code  Gb  main.o [1]
+SysTick_wait_time       0x00000307   0x10  Code  Gb  main.o [1]
+UART0_Handler           0x000004cb    0x2  Code  Wk  cstartup_M.o [1]
+UART1_Handler           0x000004cd    0x2  Code  Wk  cstartup_M.o [1]
+UART_Init               0x00000215   0x94  Code  Gb  main.o [1]
+UsageFault_Handler      0x000004b7    0x2  Code  Wk  cstartup_M.o [1]
+__cmain                 0x00000461         Code  Gb  cmain.o [5]
+__exit                  0x00000491   0x14  Code  Gb  exit.o [6]
+__iar_data_init3        0x00000401   0x28  Code  Gb  data_init.o [5]
+__iar_init_vfp          0x00000429         Code  Gb  fpinit_M.o [4]
+__iar_program_start     0x000004a5   0x10  Code  Gb  cstartup_M.o [1]
+__iar_zero_init3        0x000003c1   0x40  Code  Gb  zero_init3.o [5]
+__low_level_init        0x0000047b    0x4  Code  Gb  low_level_init.o [3]
+__vector_table          0x00000000  0x110  Data  Gb  cstartup_M.o [1]
+_call_main              0x0000046d         Code  Gb  cmain.o [5]
+_exit                   0x00000485         Code  Gb  cexit.o [5]
+_main                   0x00000477         Code  Gb  cmain.o [5]
+command_byte            0x20000004    0x1  Data  Gb  main.o [1]
+exit                    0x0000047f    0x4  Code  Gb  exit.o [3]
+main                    0x00000111  0x104  Code  Gb  main.o [1]
+para1                   0x20000005    0x1  Data  Gb  main.o [1]
+para2                   0x20000006    0x1  Data  Gb  main.o [1]
 
 
-[1] = C:\TiVA C Projects\Practice1- UART\Debug\Obj
+[1] = C:\TiVA C Projects\JamJar\Debug\Obj
 [2] = command line
 [3] = dl7M_tln.a
 [4] = m7M_tls.a
 [5] = rt7M_tl.a
 [6] = shb_l.a
 
-    842 bytes of readonly  code memory
-    218 bytes of readonly  data memory
-  4 099 bytes of readwrite data memory
+    952 bytes of readonly  code memory
+    290 bytes of readonly  data memory
+  4 103 bytes of readwrite data memory
 
 Errors: none
 Warnings: none

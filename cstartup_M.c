@@ -37,7 +37,7 @@ extern void PWM0Fault_Handler( void );
 extern void GPIOPortF_Handler( void );
 extern void ADC0SS0_Handler( void);
 extern void ADC0SS3_Handler( void);
-
+extern void ADC1SS3_Handler( void);
 
 
 typedef void( *intfunc )( void );
@@ -103,8 +103,28 @@ const intvec_elem __vector_table[] =
   0,
   0,
   0,
-  GPIOPortF_Handler
-  
+  GPIOPortF_Handler,
+  0,
+  0,
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  ADC1SS3_Handler   
 
 
 };
@@ -151,6 +171,9 @@ __weak void GPIOPortF_Handler( void ) { while (1) {} }
 __weak void ADC0SS0_Handler( void ) { while (1) {} }
 #pragma call_graph_root = "interrupt"
 __weak void ADC0SS3_Handler( void ) { while (1) {} }
+#pragma call_graph_root = "interrupt"
+__weak void ADC1SS3_Handler( void ) { while (1) {} }
+
 
 #pragma call_graph_root = "interrupt"
 __weak void PWM0Fault_Handler( void ) { while (1) {} }
