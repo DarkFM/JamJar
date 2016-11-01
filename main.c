@@ -247,7 +247,7 @@ void ADC_PE_Init(void) {
   
   
   
-  /***************************ADC INITIALIZATION******************************/
+  /***************************ADC_0 INITIALIZATION******************************/
   // Enable the ADC clock using the RCGCADC register
   SYSCTL_RCGCADC_R |= (1 << 0 );        //SELECTS ADC0
   
@@ -287,9 +287,47 @@ void ADC_PE_Init(void) {
   NVIC_PRI4_R |= (NVIC_PRI4_INT17_M & (1u << 13));    // Used a mask to set the priority to 1 -> 0b0010
   NVIC_EN0_R |= (1 << 17);      // Set bit 30 as the IRQ for PORTF interrupt is 30 in the vector table
    
+   
+  /***************************ADC_1 INITIALIZATION******************************/
+  // Enable the ADC clock using the RCGCADC register
+  SYSCTL_RCGCADC_R |= (1 << 1);        //SELECTS ADC0
   
-}
+  // enable the clock to approporiate GPIO ports
+  //SYSCTL_RCGCGPIO_R |= (1 << 4);       // enable clock for port E
+  GPIO_PORTE_DIR_R &=  ~(1 << 1);       // set pin E1 input
+  GPIO_PORTE_AFSEL_R |= (1 << 1);      // making sure != GPIO funtionality is selected
+  GPIO_PORTE_DEN_R &= ~(1 << 1);        // DISABLE digital functionality on pin, sets it up for analog mode
+  GPIO_PORTE_AMSEL_R |= (1 << 1);        // ENABLE ANALOG MODE FOR PE2
+  
+  
+  /**** configure the sample sequencer ***/
+  
+  // ensure the sample sequencer is diabled by clearing the corrsponding ASENn bit
+  ADC1_ACTSS_R &= ~(1 << 3); // disable ss3 first. we are using SS3 cause need only 1 sample
+  
+  // configure trigger event for the sample sequencer in the ADCEMUX register
+  ADC1_EMUX_R |= (0xF << 12);  // continuosly sample
+                                
+  //For each sample in the sample sequence, configure the corresponding input source in the ADCSSMUXn register.
+  ADC1_SSMUX3_R  = 0x2; // MUX3(for sequancer 3) is given the value of 1 which corresponds to analog input 1(AIN1) -->(PE2)
+  
+  //For each sample in the sample sequence, configure the sample control bits 
+  ADC1_SSCTL3_R |= (1 << 1) | (1 << 2); // set end of sequence and enable interrupt so
+                                       // to trigger at end of ADC conversion instead of by pooling
+  
+  //If interrupts are to be used, set the corresponding MASK bit in the ADCIM register.
+  ADC1_IM_R |= (1 << 3);        // allow interrupts to be sent for sequencer 3 
+ 
+  //Enable the sample sequencer logic by setting the corresponding ASENn bit
+  //in the ADCACTSS register.
+  ADC1_ACTSS_R |= (1 << 3); // enable ADC sequencer 3
+  
+  //assign priority. IRQ = 17
+  ADC1_SSPRI_R |= (1 << 12);    // ASSIGN priority of 1 to SS3
+  NVIC_PRI4_R |= (NVIC_PRI4_INT17_M & (1u << 13));    // Used a mask to set the priority to 1 -> 0b0010
+  NVIC_EN0_R |= (1 << 17);      // Set bit 30 as the IRQ for PORTF interrupt is 30 in the vector table
 
+}
 
 
 void ADC0SS3_Handler(void){
