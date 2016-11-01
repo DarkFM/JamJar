@@ -10,69 +10,39 @@ void Send_Char(unsigned char c);
 void print_string(unsigned char *c);
 void SysTick_init(void);
 void SysTick_wait_time(unsigned long time);
-void UART0_Handler(void);
+
 #define char_size 30
 #define time_delay 4000000
     unsigned char command_byte;
     unsigned char para1, para2;
-
+/*
     unsigned char *cmd_names[8] = {  
     " OFF", "ON", "AFTR", "CHG", "PROG", "CHAF", "PTCH", "SYS"};
     unsigned char *sys_names[8] = {
     "  EX", "F/4", "SPOS", "SSEL", "0xF4", "0xF5", "TUNE", "EOX"};
+  */ 
+    
     
 /*      WE WILL USE PD7-> TXD ------ PD6-> RXD*/
 
 int main()
 { 
-    UART_Init();
     PortF_init();
     SysTick_init();
+    UART_Init();
 
-
-   // const char command[char_size];  
-  //  const char note[char_size];
-   // const char velocity[char_size];
-    
     unsigned char command_store;
     unsigned char channel_store;
-    
-    
-    //char *command_ptr = command;
-   // char *note_ptr = note;
-    //char *velocity_ptr = velocity;
-    
 
-    //char *note_ptr;
-    //char *velocity_ptr;
-  
-    
-    
-   // char *command_start = command;
-   // char *velocity_start = velocity;
-   // char *note_start = note;
-    
-  /*  for(int i=0; i < char_size; i++) { // fill out array with zeros
-      command[i] = note[i] = velocity[i] = '0';
-    }
-    */  
- 
+
   while(1){
     
-    //command_ptr = command_start; 
-    //note_ptr = note_start;
-    //velocity_ptr = velocity_start;
-    
-   // int increment = 0;
-    //while( increment < char_size ){
-    // c = Receive_Char(); // wait for user to enter a value
-    //*command_ptr = Receive_Char() & 0xf0;       // receive this value from the PC via UART, and store in array.
-    //*channel_ptr = Receive_Char() & 0x0f;
+
      
       command_byte = Receive_Char();
       command_store = command_byte & 0xf0;
       channel_store = command_byte & 0x0f;
-      GPIO_PORTF_DATA_R |= (1u << 2) | (1u << 3);   // make led purpule
+     // GPIO_PORTF_DATA_R |= (1u << 2) | (1u << 3);   // make led purpule
       SysTick_wait_time(time_delay);
       GPIO_PORTF_DATA_R &= ~(1u << 2) | (1u << 3);   // turn off
 
@@ -93,22 +63,25 @@ int main()
             case 0xb0:
             case 0xe0:
                 para1 = Receive_Char();
-                SysTick_wait_time(time_delay);
+                
                 GPIO_PORTF_DATA_R &= 0;   //CLEAR BITS
                 GPIO_PORTF_DATA_R |= (1u << 1) | (1u << 2) | (1u << 3);   // make led white
-                if(GPIO_PORTF_DATA_R & (1u << 1) != 0)
-                    GPIO_PORTF_DATA_R &= ~((1u << 1) | (1u << 2) | (1u << 3));
+                SysTick_wait_time(time_delay);
+                //if(GPIO_PORTF_DATA_R & (1u << 1) != 0)
+                    //GPIO_PORTF_DATA_R &= ~((1u << 1) | (1u << 2) | (1u << 3));
                 
                 para2 = Receive_Char();
                // Send_Char(para1);
                // print_string("HEX/n");
                // Send_Char(para2);
                // print_string("HEX/n");
-                SysTick_wait_time(time_delay);
+                
                 GPIO_PORTF_DATA_R &= 0;   //CLEAR BITS
                 GPIO_PORTF_DATA_R |= (1u << 2);   // make led blue
-                if(GPIO_PORTF_DATA_R & (1u << 2) != 0)
-                    GPIO_PORTF_DATA_R &= ~(1u << 2);
+                SysTick_wait_time(time_delay);
+                // GPIO_PORTF_DATA_R &= 0;   //CLEAR BITS
+                //if(GPIO_PORTF_DATA_R & (1u << 2) != 0)
+                //    GPIO_PORTF_DATA_R &= ~(1u << 2);
                 break;
             
         //These ones have only one parameter
@@ -118,11 +91,12 @@ int main()
                 //Send_Char(para1);
                 //print_string("HEX/n");
                 
-                //SysTick_wait_time(time_delay);
                 GPIO_PORTF_DATA_R &= 0;   //CLEAR BITS
                 GPIO_PORTF_DATA_R |= (1u << 3);   // make led green
-                if(GPIO_PORTF_DATA_R & (1u << 3) != 0)
-                    GPIO_PORTF_DATA_R &= ~(1u << 3);
+                SysTick_wait_time(time_delay);
+                // GPIO_PORTF_DATA_R &= 0;   //CLEAR BITS
+                // if(GPIO_PORTF_DATA_R & (1u << 3) != 0)
+                 //   GPIO_PORTF_DATA_R &= ~(1u << 3);
                 break;
                 
         //Handle system ones specially
@@ -130,13 +104,11 @@ int main()
                 //print_string(sys_names[command_store & 0x7]);
                 //print_string("/n");
                 break;
+      default:
+        GPIO_PORTF_DATA_R &= 0;   //CLEAR BITS
+        SysTick_wait_time(time_delay);
+        break;
 
-                
-                
-        
-        
-        
-     // }
    
     }
 }
@@ -144,7 +116,7 @@ int main()
 
 
 
-/*
+
 void UART_Init(void){            // should be called only once
 
   //1. Enable the UART module using the RCGCUART register (see page 342).
@@ -198,7 +170,7 @@ void UART_Init(void){            // should be called only once
   UART2_CTL_R |= (UART_CTL_RXE | UART_CTL_TXE | UART_CTL_UARTEN); // enable receive, transmit, and uart
   
 }
-*/
+
 
 void PortF_init(void) {
     
@@ -215,8 +187,8 @@ void PortF_init(void) {
 void Send_Char(unsigned char c){        // send char to pc
   
   // make sure any previous transmission has ended
-  while((UART0_FR_R & UART_FR_TXFF) != 0);   // WAIT IF FIFO IS FULL EMPTY
-    UART0_DR_R = c;
+  while((UART2_FR_R & UART_FR_TXFF) != 0);   // WAIT IF FIFO IS FULL EMPTY
+    UART2_DR_R = c;
   
 
 }
@@ -225,8 +197,8 @@ char Receive_Char(void){        // reviece data from pc
   
   char c;
   // make sure fifo is not empty to begin recieving
-  while( (UART0_FR_R & UART_FR_RXFE) != 0);      // wait if the Fifo is empty
-  c = UART0_DR_R;  
+  while( (UART2_FR_R & UART_FR_RXFE) != 0);      // wait if the Fifo is empty
+  c = UART2_DR_R;  
   return c;
   
 }
@@ -267,47 +239,9 @@ void SysTick_wait_time(unsigned long time) {
 
 
 
+
+
 /*
-
-void PortF_init(void) {
-    
-  SYSCTL_RCGCGPIO_R |= (1u << 5);        // enable clock for port F
-  //SysTick_wait_time(10000);// allow for clock to stabilize
-
-  GPIO_PORTF_DIR_R |= ((1 << 1) | (1 << 2) | (1 << 3));        // set pin 1,2,3 to output
-  GPIO_PORTF_DEN_R |= ((1 << 1) | (1 << 2) | (1 << 3));        // enable digital functionality on pin
-  GPIO_PORTF_AFSEL_R &= ((0 << 1) | (0 << 2) | (0 << 3));      // making sure GPIO funtionality is selected
-  
-  
-}
-
-void Send_Char(unsigned char c){        // send char to pc
-  
-  // make sure any previous transmission has ended
-  while((UART0_FR_R & UART_FR_TXFF) != 0);   // WAIT IF FIFO IS FULL EMPTY
-    UART0_DR_R = c;
-  
-
-}
-
-char Receive_Char(void){        // reviece data from pc
-  
-  char c;
-  // make sure fifo is not empty to begin recieving
-  while( (UART0_FR_R & UART_FR_RXFE) != 0);      // wait if the Fifo is empty
-  c = UART0_DR_R;  
-  return c;
-  
-}
-
-void print_string(unsigned char *c)     // sends a string to the pc
-{
-  while(*c){
-    Send_Char(*(c++));
-  }
-}
-
-*/
 
 void UART_Init(void){            // should be called only once
 
@@ -346,3 +280,22 @@ void UART_Init(void){            // should be called only once
   
 }
 
+*/
+
+
+/*
+static void HardFault_Handler( void )
+{
+__asm volatile
+    (
+        " tst lr, #4                                                \n"
+        " ite eq                                                    \n"
+        " mrseq r0, msp                                             \n"
+        " mrsne r0, psp                                             \n"
+        " ldr r1, [r0, #24]                                         \n"
+        " ldr r2, handler2_address_const                            \n"
+        " bx r2                                                     \n"
+        " handler2_address_const: .word prvGetRegistersFromStack    \n"
+    );
+}
+*/
