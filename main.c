@@ -254,7 +254,7 @@ void ADC_PE_Init(void) {
   // enable the clock to approporiate GPIO ports
   SYSCTL_RCGCGPIO_R |= (1 << 4);       // enable clock for port E
   GPIO_PORTE_DIR_R &=  ~(1 << 2);       // set pin 2 input
-  GPIO_PORTE_AFSEL_R |= (1 << 2);      // making sure GPIO funtionality is selected
+  GPIO_PORTE_AFSEL_R |= (1 << 2);      // making sure GPIO funtionality is not selected
   GPIO_PORTE_DEN_R &= ~(1 << 2);        // DISABLE digital functionality on pin, sets it up for analog mode
   GPIO_PORTE_AMSEL_R |= (1<< 2);        // ENABLE ANALOG MODE FOR PE2
   
