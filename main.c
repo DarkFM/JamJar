@@ -10,19 +10,16 @@ void Send_Char(unsigned char c);
 void print_string(unsigned char *c);
 void SysTick_init(void);
 void SysTick_wait_time(unsigned long time);
+void ADC0SS3_Handler(void);
+void ADC_PE_Init(void);
 
 #define char_size 30
 #define time_delay 4000000
-    unsigned char command_byte;
-    unsigned char para1, para2;
-/*
-    unsigned char *cmd_names[8] = {  
-    " OFF", "ON", "AFTR", "CHG", "PROG", "CHAF", "PTCH", "SYS"};
-    unsigned char *sys_names[8] = {
-    "  EX", "F/4", "SPOS", "SSEL", "0xF4", "0xF5", "TUNE", "EOX"};
-  */ 
-    
-    
+
+unsigned char command_byte;
+unsigned char para1, para2;
+volatile static unsigned long ADC_result;
+
 /*      WE WILL USE PD7-> TXD ------ PD6-> RXD*/
 
 int main()
@@ -30,6 +27,7 @@ int main()
     PortF_init();
     SysTick_init();
     UART_Init();
+    void ADC_PE_Init();
 
     unsigned char command_store;
     unsigned char channel_store;
@@ -210,17 +208,6 @@ void print_string(unsigned char *c)     // sends a string to the pc
   }
 }
 
-/*
-// triggers when FIFO is 1/2 full
-void UART0_Handler(void){
- //acknowledge the recieve interrupt
-  //if(UART2_RIS_R&(1<< 4) !=0){
-    UART0_ICR_R |= (1<<4);      // acknowledge interrupt
-    GPIO_PORTF_DATA_R ^= (1u << 2);   // TOGGLE blue LED
-    command_byte = UART0_DR_R;  // store the char from FIFO
- // }
-}
-*/
 
 void SysTick_init(void) {
   NVIC_ST_CTRL_R &= (0u << 0);  // turn off enable bit before we use the systick
@@ -237,65 +224,82 @@ void SysTick_wait_time(unsigned long time) {
   }  
 }
 
-
-
-
-
-/*
-
-void UART_Init(void){            // should be called only once
-
-  //1. Enable the UART module using the RCGCUART register (see page 342).
-  SYSCTL_RCGCUART_R |= (1u << 0);       // enable UART0 for USB COM to pc
+void ADC_PE_Init(void) {
   
-  //2. Enable the clock to the appropriate GPIO module via the RCGCGPIO register (see page 338). To find out which GPIO port to enable, refer to Table 23-5 on page 1344.
-  SYSCTL_RCGCGPIO_R |= (1u << 0);       // enable clock for port A
+  // NEED TO ACTIVATE PLL TO USE ADC. this sets it to 80MHz
   
-  //3. Set the GPIO AFSEL bits for the appropriate pins (see page 668). To determine which GPIOs toconfigure, see Table 23-4 on page 1337.
-  GPIO_PORTA_AFSEL_R |= (1u << 0) | (1u << 1);  // select alternate functions for PA0&1
+  // Using RCC2 b/c it provids more options
+  SYSCTL_RCC2_R |= (1 << 31) | (1 << 11);   // use RCC2 instead of RCC and set BYPASS2
+  // Specify the crystal freq and oscillator source
+    SYSCTL_RCC_R &= ~(SYSCTL_RCC_XTAL_M);       // clear XTAL
+    SYSCTL_RCC_R = 0x00000540; // configure for 16 MHz crystal
+    SYSCTL_RCC2_R &= ~(0x7 << 4);  // configure for main oscillator source
+  //  activate PLL by clearing PWRDN
+  SYSCTL_RCC2_R &= ~0x00002000;
+  //  set the desired system divider
+  SYSCTL_RCC2_R |= 0x40000000;   // use 400 MHz PLL
+  SYSCTL_RCC2_R = (SYSCTL_RCC2_R&~ 0x1FC00000)  // clear system clock divider
+                  + (4<<22);      // configure for 80 MHz clock
+  //  wait for the PLL to lock by polling PLLLRIS
+  while((SYSCTL_RIS_R&0x00000040)==0){};  // wait for PLLRIS bit
+  // enable use of PLL by clearing BYPASS
+  SYSCTL_RCC2_R &= ~0x00000800;
   
-  //4. Configure the GPIO current level and/or slew rate as specified for the mode selected (seepage 670 and page 678).
-
-  //5. Configure the PMCn fields in the GPIOPCTL register to assign the UART signals to the appropriate pins (see page 685 and Table 23-5 on page 1344)
-  GPIO_PORTA_PCTL_R |= (1u << 0) | (1u << 4);   // Select UART functionality for PA0&1
   
-  // enable digital functions for the pins
-  GPIO_PORTA_DEN_R |= (1u << 0) | (1u << 1);    // allow digital levels 0/3.3 on the pins
   
-  // set the baud rate on the UART: clk(Hz)/16/(baud rate)
-  UART0_CTL_R &= ~(1u << 0);    // disable UART before modify
-  UART0_FBRD_R |= 11u;        // assign 11 -> gotten from decimal of result: 64*dec
-  UART0_IBRD_R |= 104u;        // assign 104 -> integer part of result from eqn above
+  /***************************ADC INITIALIZATION******************************/
+  // Enable the ADC clock using the RCGCADC register
+  SYSCTL_RCGCADC_R |= (1 << 0 );        //SELECTS ADC0
   
-  // Configure the UART clock source by writing to the UARTCC register
-  UART0_CC_R   |= UART_CC_CS_SYSCLK;    //System clock (based on clock source and divisor factor)
+  // enable the clock to approporiate GPIO ports
+  SYSCTL_RCGCGPIO_R |= (1 << 4);       // enable clock for port E
+  GPIO_PORTE_DIR_R &=  ~(1 << 2);       // set pin 2 input
+  GPIO_PORTE_AFSEL_R |= (1 << 2);      // making sure GPIO funtionality is selected
+  GPIO_PORTE_DEN_R &= ~(1 << 2);        // DISABLE digital functionality on pin, sets it up for analog mode
+  GPIO_PORTE_AMSEL_R |= (1<< 2);        // ENABLE ANALOG MODE FOR PE2
   
-  //set word length of the FIFO in UART and enable FIFO
-  UART0_LCRH_R |= (1u << 6) | (1u << 5);        // select word length of 8 bits
-  UART0_LCRH_R |= UART_LCRH_FEN;                // UART Enable FIFOs
   
+  /**** configure the sample sequencer ***/
+  
+  // ensure the sample sequencer is diabled by clearing the corrsponding ASENn bit
+  ADC0_ACTSS_R &= ~(1 << 3); // disable ss3 first. we are using SS3 cause need only 1 sample
+  
+  // configure trigger event for the sample sequencer in the ADCEMUX register
+  ADC0_EMUX_R |= (0xF << 12);  // continuosly sample
+                                //trigger event is handled by software setting bit in ADCPSSI 
+  
+  //For each sample in the sample sequence, configure the corresponding input source in the ADCSSMUXn register.
+  ADC0_SSMUX3_R  = (1 << 0); // MUX3(for sequancer 3) is given the value of 1 which corresponds to analog input 1(AIN1) -->(PE2)
+  
+  //For each sample in the sample sequence, configure the sample control bits 
+  ADC0_SSCTL3_R |= (1 << 1) | (1 << 2); // set end of sequence and enable interrupt so
+                                       // to trigger at end of ADC conversion instead of by pooling
+  
+  //If interrupts are to be used, set the corresponding MASK bit in the ADCIM register.
+  ADC0_IM_R |= (1 << 3);        // allow interrupts to be sent for sequencer 3 
+ 
+  //Enable the sample sequencer logic by setting the corresponding ASENn bit
+  //in the ADCACTSS register.
+  ADC0_ACTSS_R |= (1 << 3); // enable ADC sequencer 3
+  
+  //assign priority. IRQ = 17
+  ADC0_SSPRI_R |= (1 << 12);    // ASSIGN priority of 1 to SS3
+  NVIC_PRI4_R |= (NVIC_PRI4_INT17_M & (1u << 13));    // Used a mask to set the priority to 1 -> 0b0010
+  NVIC_EN0_R |= (1 << 17);      // Set bit 30 as the IRQ for PORTF interrupt is 30 in the vector table
    
-  //Enable the UART
-  UART0_CTL_R |= (UART_CTL_RXE | UART_CTL_TXE | UART_CTL_UARTEN); // enable receive, transmit, and uart
   
 }
 
-*/
 
 
-/*
-static void HardFault_Handler( void )
-{
-__asm volatile
-    (
-        " tst lr, #4                                                \n"
-        " ite eq                                                    \n"
-        " mrseq r0, msp                                             \n"
-        " mrsne r0, psp                                             \n"
-        " ldr r1, [r0, #24]                                         \n"
-        " ldr r2, handler2_address_const                            \n"
-        " bx r2                                                     \n"
-        " handler2_address_const: .word prvGetRegistersFromStack    \n"
-    );
+void ADC0SS3_Handler(void){
+  
+  ADC0_ISC_R |= (1 << 3);       // Acknowledge interrupt by clearing interrupt
+  ADC_result = ADC0_SSFIFO3_R;  // Take in the results of the sample
+  
+  if (ADC_result > 2048)
+  GPIO_PORTF_DATA_R |= (1 << 2) | (1 << 3);
+  else
+  GPIO_PORTF_DATA_R &= ~((1 << 2) | (1 << 3));    
+  //delay(160000);
 }
-*/

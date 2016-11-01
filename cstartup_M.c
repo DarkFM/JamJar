@@ -35,7 +35,8 @@ extern void SSI0_Handler( void );
 extern void I2C0_Handler( void );
 extern void PWM0Fault_Handler( void );
 extern void GPIOPortF_Handler( void );
-extern void UART2_Handler( void );
+extern void ADC0SS0_Handler( void);
+extern void ADC0SS3_Handler( void);
 
 
 
@@ -86,6 +87,10 @@ const intvec_elem __vector_table[] =
   0,
   0,
   0,
+  ADC0SS0_Handler,
+  0,
+  0,
+  ADC0SS3_Handler,
   0,
   0,
   0,
@@ -98,14 +103,7 @@ const intvec_elem __vector_table[] =
   0,
   0,
   0,
-  0,
-  0,
-  0,
-  0,
-  GPIOPortF_Handler,
-  0,
-  0,
-  UART2_Handler
+  GPIOPortF_Handler
   
 
 
@@ -150,8 +148,9 @@ __weak void I2C0_Handler( void ) { while (1) {} }
 #pragma call_graph_root = "interrupt"
 __weak void GPIOPortF_Handler( void ) { while (1) {} }
 #pragma call_graph_root = "interrupt"
-__weak void UART2_Handler( void ) { while (1) {} }
-
+__weak void ADC0SS0_Handler( void ) { while (1) {} }
+#pragma call_graph_root = "interrupt"
+__weak void ADC0SS3_Handler( void ) { while (1) {} }
 
 #pragma call_graph_root = "interrupt"
 __weak void PWM0Fault_Handler( void ) { while (1) {} }
