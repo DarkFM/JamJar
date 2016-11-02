@@ -2,7 +2,7 @@
 
 <project>
   <fileVersion>2</fileVersion>
-  <fileChecksum>420810517</fileChecksum>
+  <fileChecksum>1387560671</fileChecksum>
   <configuration>
     <name>Debug</name>
     <outputs>
@@ -34,6 +34,7 @@
       <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
       <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
       <file>$TOOLKIT_DIR$\lib\shb_l.a</file>
+      <file>$PROJ_DIR$\..\Project test\LM4F120H5QR.h</file>
     </outputs>
     <file>
       <name>[ROOT_NODE]</name>
@@ -103,6 +104,10 @@
         </tool>
       </inputs>
     </file>
+    <forcedrebuild>
+      <name>[MULTI_TOOL]</name>
+      <tool>ILINK</tool>
+    </forcedrebuild>
   </configuration>
   <configuration>
     <name>Release</name>

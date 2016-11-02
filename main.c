@@ -27,7 +27,7 @@ int main()
     PortF_init();
     SysTick_init();
     UART_Init();
-    void ADC_PE_Init();
+    ADC_PE_Init();
 
     unsigned char command_store;
     unsigned char channel_store;
