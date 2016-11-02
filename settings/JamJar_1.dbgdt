@@ -119,7 +119,7 @@
         <item>0x20000FC0</item><item>0x400FE608</item></SymMemHistory>
         
       <zone>Memory</zone></SymbolicMemory>
-    <QuickWatch><col-names><item>Expression</item><item>Location</item><item>Type</item><item>Value</item></col-names><col-widths><item>100</item><item>150</item><item>100</item><item>100</item></col-widths><QWatchHistory><item>para2</item><item>para1</item></QWatchHistory></QuickWatch><WATCH_1><expressions><item>para1</item><item>para2</item><item>command_store</item><item></item></expressions><col-names><item>Expression</item><item>Location</item><item>Type</item><item>Value</item></col-names><col-widths><item>100</item><item>150</item><item>100</item><item>381</item></col-widths></WATCH_1></Static>
+    <QuickWatch><col-names><item>Expression</item><item>Location</item><item>Type</item><item>Value</item></col-names><col-widths><item>100</item><item>150</item><item>100</item><item>100</item></col-widths><QWatchHistory><item>para2</item><item>para1</item></QWatchHistory></QuickWatch><WATCH_1><expressions><item>para1</item><item>para2</item><item>command_store</item><item/></expressions><col-names><item>Expression</item><item>Location</item><item>Type</item><item>Value</item></col-names><col-widths><item>100</item><item>150</item><item>100</item><item>381</item></col-widths></WATCH_1></Static>
     <Windows>
       
       
