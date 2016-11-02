@@ -12,13 +12,15 @@ void SysTick_init(void);
 void SysTick_wait_time(unsigned long time);
 void ADC0SS3_Handler(void);
 void ADC_PE_Init(void);
+void ADC1SS3_Handler(void);
 
 #define char_size 30
 #define time_delay 4000000
 
 unsigned char command_byte;
 unsigned char para1, para2;
-volatile static unsigned long ADC_result;
+volatile static unsigned long ADC0_result;
+volatile static unsigned long ADC1_result;
 
 /*      WE WILL USE PD7-> TXD ------ PD6-> RXD*/
 
@@ -27,7 +29,7 @@ int main()
     PortF_init();
     SysTick_init();
     UART_Init();
-    void ADC_PE_Init();
+    ADC_PE_Init();
 
     unsigned char command_store;
     unsigned char channel_store;
@@ -37,12 +39,12 @@ int main()
     
 
      
-      command_byte = Receive_Char();
-      command_store = command_byte & 0xf0;
-      channel_store = command_byte & 0x0f;
+     // command_byte = Receive_Char();
+      //command_store = command_byte & 0xf0;
+      //channel_store = command_byte & 0x0f;
      // GPIO_PORTF_DATA_R |= (1u << 2) | (1u << 3);   // make led purpule
-      SysTick_wait_time(time_delay);
-      GPIO_PORTF_DATA_R &= ~(1u << 2) | (1u << 3);   // turn off
+      //SysTick_wait_time(time_delay);
+    //  GPIO_PORTF_DATA_R &= ~(1u << 2) | (1u << 3);   // turn off
 
 
     
@@ -53,6 +55,9 @@ int main()
       }
       //print_string(cmd_names[command_store >>4 & 0x7]);
      // print_string("\n");
+      
+      /*
+      
       switch(command_store) {
         //these commands have two parameters
             case 0x80:
@@ -60,7 +65,7 @@ int main()
             case 0xa0:
             case 0xb0:
             case 0xe0:
-                para1 = Receive_Char();
+                //para1 = Receive_Char();
                 
                 GPIO_PORTF_DATA_R &= 0;   //CLEAR BITS
                 GPIO_PORTF_DATA_R |= (1u << 1) | (1u << 2) | (1u << 3);   // make led white
@@ -68,7 +73,7 @@ int main()
                 //if(GPIO_PORTF_DATA_R & (1u << 1) != 0)
                     //GPIO_PORTF_DATA_R &= ~((1u << 1) | (1u << 2) | (1u << 3));
                 
-                para2 = Receive_Char();
+               // para2 = Receive_Char();
                // Send_Char(para1);
                // print_string("HEX/n");
                // Send_Char(para2);
@@ -85,13 +90,13 @@ int main()
         //These ones have only one parameter
             case 0xc0:
             case 0xd0:
-                para1 = Receive_Char();
+               // para1 = Receive_Char();
                 //Send_Char(para1);
                 //print_string("HEX/n");
                 
                 GPIO_PORTF_DATA_R &= 0;   //CLEAR BITS
                 GPIO_PORTF_DATA_R |= (1u << 3);   // make led green
-                SysTick_wait_time(time_delay);
+               // SysTick_wait_time(time_delay);
                 // GPIO_PORTF_DATA_R &= 0;   //CLEAR BITS
                 // if(GPIO_PORTF_DATA_R & (1u << 3) != 0)
                  //   GPIO_PORTF_DATA_R &= ~(1u << 3);
@@ -109,7 +114,12 @@ int main()
 
    
     }
-}
+    
+    */
+
+  
+  
+  }
 }
 
 
@@ -148,21 +158,6 @@ void UART_Init(void){            // should be called only once
   //set word length of the FIFO in UART and enable FIFO
   UART2_LCRH_R |= (1u << 6) | (1u << 5);        // select word length of 8 bits
   UART2_LCRH_R |= UART_LCRH_FEN;                // UART Enable FIFOs
-  
-  // enable UART interrupt for recieve and transmit
- // UART2_IFLS_R |= (1 << 4); // trigger when RX fifo is 1/2 full
- // UART2_IFLS_R |= (1 << 1); //trigger when TX FIFO is 1/2 full
-  
-  
-  // set the corresponding bits in the interrupt Mask to allow interrupts
-  //UART2_IM_R |= (1u << 4); // allows an interrupt to be sent when RXRIS bit
-                            // in the UARTRIS register(read-only) is set
-  //UART2_IM_R |= (1u << 5); // allows intterupt to be sent when transmitting
- 
-  // assign interrupt priority. IQR=33, So use PRI8 -> Interrupt 32-35
-  //NVIC_PRI8_R |= (NVIC_PRI8_INT33_M & (1u << 14)); // SET priority to 2
-  // enable the interrupt to be serviced
- // NVIC_EN1_R |= (1u << 1);      // sets interrupt 33 to be enabled
   
   //Enable the UART
   UART2_CTL_R |= (UART_CTL_RXE | UART_CTL_TXE | UART_CTL_UARTEN); // enable receive, transmit, and uart
@@ -322,10 +317,10 @@ void ADC_PE_Init(void) {
   //in the ADCACTSS register.
   ADC1_ACTSS_R |= (1 << 3); // enable ADC sequencer 3
   
-  //assign priority. IRQ = 17
+  //assign priority. IRQ = 51
   ADC1_SSPRI_R |= (1 << 12);    // ASSIGN priority of 1 to SS3
-  NVIC_PRI4_R |= (NVIC_PRI4_INT17_M & (1u << 13));    // Used a mask to set the priority to 1 -> 0b0010
-  NVIC_EN0_R |= (1 << 17);      // Set bit 30 as the IRQ for PORTF interrupt is 30 in the vector table
+  NVIC_PRI12_R |= (NVIC_PRI12_INT51_M & (1u << 30) );    // Used a mask to set the priority to 2 -> 0b0100
+  NVIC_EN1_R |= (1 << 19);      // Set bit 30 as the IRQ for PORTF interrupt is 30 in the vector table
 
 }
 
@@ -333,11 +328,24 @@ void ADC_PE_Init(void) {
 void ADC0SS3_Handler(void){
   
   ADC0_ISC_R |= (1 << 3);       // Acknowledge interrupt by clearing interrupt
-  ADC_result = ADC0_SSFIFO3_R;  // Take in the results of the sample
-  
-  if (ADC_result > 2048)
+  ADC0_result = ADC0_SSFIFO3_R;  // Take in the results of the sample
+  GPIO_PORTF_DATA_R = 0; 
+  if (ADC0_result > 2048){
   GPIO_PORTF_DATA_R |= (1 << 2) | (1 << 3);
+  }
   else
-  GPIO_PORTF_DATA_R &= ~((1 << 2) | (1 << 3));    
+  GPIO_PORTF_DATA_R = 0;    
+  //delay(160000);
+}
+void ADC1SS3_Handler(void){
+  
+  ADC1_ISC_R |= (1 << 3);       // Acknowledge interrupt by clearing interrupt
+  ADC1_result = ADC1_SSFIFO3_R;  // Take in the results of the sample
+  GPIO_PORTF_DATA_R = 0; 
+  if (ADC1_result > 2048){
+  GPIO_PORTF_DATA_R |= (1 << 1) | (1 << 3);
+  }
+  else
+  GPIO_PORTF_DATA_R = 0;      
   //delay(160000);
 }

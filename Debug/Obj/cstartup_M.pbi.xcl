@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 "C:\Users\Pista\Documents\JamJarWiki\Git\JamJar\cstartup_M.c"
-=======
-"C:\TiVA C Projects\JamJar\cstartup_M.c"
->>>>>>> d885f4378554c5dc9b17a55639d9a1f90a91268f
 -std=c99
 -ferror-limit=100
 -I
