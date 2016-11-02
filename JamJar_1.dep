@@ -2,24 +2,51 @@
 
 <project>
   <fileVersion>2</fileVersion>
+<<<<<<< HEAD
   <fileChecksum>1387560671</fileChecksum>
+=======
+  <fileChecksum>2544063070</fileChecksum>
+>>>>>>> 6569999b2dd52935a63a36d1a2ca5ebfd7d3a9e9
   <configuration>
     <name>Debug</name>
     <outputs>
-      <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
+<<<<<<< HEAD
+      <file>$PROJ_DIR$\Debug\List\JamJar_1.map</file>
       <file>$PROJ_DIR$\Debug\Obj\cstartup_M.o</file>
-      <file>$TOOLKIT_DIR$\lib\m7M_tls.a</file>
-      <file>$PROJ_DIR$\cstartup_M.c</file>
-      <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\main.o</file>
-      <file>$TOOLKIT_DIR$\inc\c\stdint.h</file>
       <file>$PROJ_DIR$\Debug\Exe\JamJar_1.out</file>
-      <file>$PROJ_DIR$\Debug\Obj\main.__cstat.et</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdint.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\cstartup_M.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.o</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
       <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
+      <file>$TOOLKIT_DIR$\config\linker\TexasInstruments\TM4C123GH6.icf</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
+      <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
+      <file>$PROJ_DIR$\Debug\Obj\JamJar_1.pbd</file>
+      <file>$PROJ_DIR$\..\..\..\..\..\..\ti\TivaWare_C_Series-2.1.3.156\inc\tm4c123gh6pm.h</file>
+      <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
+      <file>$TOOLKIT_DIR$\lib\m7M_tls.a</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.__cstat.et</file>
+      <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\cstartup_M.__cstat.et</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
       <file>$TOOLKIT_DIR$\inc\c\ysizet.h</file>
+      <file>$TOOLKIT_DIR$\lib\shb_l.a</file>
       <file>$PROJ_DIR$\main.c</file>
       <file>$TOOLKIT_DIR$\inc\c\ystdio.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
+      <file>$PROJ_DIR$\cstartup_M.c</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</file>
+=======
+      <file>$TOOLKIT_DIR$\lib\shb_l.a</file>
+      <file>$TOOLKIT_DIR$\config\linker\TexasInstruments\TM4C123GH6.icf</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
+      <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
+      <file>$TOOLKIT_DIR$\inc\c\ysizet.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ystdio.h</file>
       <file>$PROJ_DIR$\Debug\List\JamJar_1.map</file>
       <file>$PROJ_DIR$\..\..\ti\TivaWare_C_Series-2.1.3.156\inc\tm4c123gh6pm.h</file>
       <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
@@ -28,37 +55,35 @@
       <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
       <file>$PROJ_DIR$\Debug\Obj\cstartup_M.__cstat.et</file>
       <file>$PROJ_DIR$\Debug\Obj\cstartup_M.pbi</file>
-      <file>$TOOLKIT_DIR$\config\linker\TexasInstruments\TM4C123GH6.icf</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
-      <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\cstartup_M.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.o</file>
+      <file>$TOOLKIT_DIR$\lib\m7M_tls.a</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdint.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.__cstat.et</file>
+      <file>$PROJ_DIR$\Debug\Exe\JamJar_1.out</file>
       <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
+<<<<<<< HEAD
       <file>$TOOLKIT_DIR$\lib\shb_l.a</file>
       <file>$PROJ_DIR$\..\Project test\LM4F120H5QR.h</file>
+=======
+      <file>$PROJ_DIR$\cstartup_M.c</file>
+      <file>$PROJ_DIR$\main.c</file>
+>>>>>>> 7f55c162c6b36a878e73eaee12210b42705c6394
+>>>>>>> 6569999b2dd52935a63a36d1a2ca5ebfd7d3a9e9
     </outputs>
     <file>
       <name>[ROOT_NODE]</name>
       <outputs>
         <tool>
           <name>ILINK</name>
-          <file> 7 14</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\cstartup_M.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 21</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 1</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 20</file>
+<<<<<<< HEAD
+          <file> 2 0</file>
+=======
+          <file> 24 7</file>
         </tool>
       </outputs>
     </file>
@@ -67,47 +92,111 @@
       <outputs>
         <tool>
           <name>ILINK</name>
-          <file> 14</file>
+          <file> 7</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ILINK</name>
-          <file> 22 1 5 27 24 2 26</file>
+          <file> 1 17 18 0 4 19 25</file>
+>>>>>>> 7f55c162c6b36a878e73eaee12210b42705c6394
         </tool>
       </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\cstartup_M.c</name>
+      <outputs>
+        <tool>
+<<<<<<< HEAD
+          <name>ILINK</name>
+          <file> 0</file>
+=======
+          <name>BICOMP</name>
+          <file> 14</file>
+>>>>>>> 7f55c162c6b36a878e73eaee12210b42705c6394
+        </tool>
+        <tool>
+<<<<<<< HEAD
+          <name>ILINK</name>
+          <file> 8 1 5 23 13 16 10</file>
+=======
+          <name>ICCARM</name>
+          <file> 17</file>
+>>>>>>> 7f55c162c6b36a878e73eaee12210b42705c6394
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 13</file>
+        </tool>
+      </outputs>
     </file>
     <file>
       <name>$PROJ_DIR$\main.c</name>
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 13</file>
+<<<<<<< HEAD
+          <file> 20</file>
+=======
+          <file> 15</file>
+>>>>>>> 7f55c162c6b36a878e73eaee12210b42705c6394
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 5</file>
+          <file> 18</file>
         </tool>
         <tool>
           <name>__cstat</name>
-          <file> 8</file>
+<<<<<<< HEAD
+          <file> 17</file>
+=======
+          <file> 23</file>
+>>>>>>> 7f55c162c6b36a878e73eaee12210b42705c6394
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 23 16 19 4 25 0 10 15 17 9 6 12</file>
+<<<<<<< HEAD
+          <file> 14 15 21 9 18 6 22 12 27 7 3 25</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 6 4 0 25 17 9 16 23 15 19 10 12</file>
+          <file> 3 21 15 14 27 7 18 6 12 9 22 25</file>
+=======
+          <file> 2 9 12 22 3 16 5 8 10 21 20 6</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 20 22 16 3 10 21 9 2 8 12 5 6</file>
+>>>>>>> 7f55c162c6b36a878e73eaee12210b42705c6394
         </tool>
       </inputs>
     </file>
+<<<<<<< HEAD
     <forcedrebuild>
       <name>[MULTI_TOOL]</name>
       <tool>ILINK</tool>
     </forcedrebuild>
+=======
+    <file>
+      <name>$PROJ_DIR$\cstartup_M.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 4</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 1</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 19</file>
+        </tool>
+      </outputs>
+    </file>
+>>>>>>> 6569999b2dd52935a63a36d1a2ca5ebfd7d3a9e9
   </configuration>
   <configuration>
     <name>Release</name>

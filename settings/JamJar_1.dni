@@ -14,7 +14,7 @@ LMIFTDIfoundProbes=
 LMI_ResetMode=0x00000001
 LMI_LeaveTargetRunning=0x00000000
 [DebugChecksum]
-Checksum=500682271
+Checksum=1821899628
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0

@@ -1,2 +1,6 @@
 [MainWindow]
-WindowPlacement=_ 331 100 1206 735 3
+<<<<<<< HEAD
+WindowPlacement=_ -1226 -26 -255 499 3
+=======
+WindowPlacement=_ 80 57 1051 582 3
+>>>>>>> 7f55c162c6b36a878e73eaee12210b42705c6394
