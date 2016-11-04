@@ -14,7 +14,7 @@ LMIFTDIfoundProbes=
 LMI_ResetMode=0x00000001
 LMI_LeaveTargetRunning=0x00000000
 [DebugChecksum]
-Checksum=1821899628
+Checksum=-1609623855
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -75,5 +75,6 @@ mode=0
 [Breakpoints]
 Count=0
 [Aliases]
-Count=0
+A0=_ "C:\Users\Pista\Documents\JamJarWiki\Git\JamJar\main.c" ""
+Count=1
 SuppressDialog=0

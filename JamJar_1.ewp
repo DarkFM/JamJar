@@ -1926,6 +1926,9 @@
     <name>$PROJ_DIR$\cstartup_M.c</name>
   </file>
   <file>
+    <name>$PROJ_DIR$\..\Project test\LM4F120H5QR.h</name>
+  </file>
+  <file>
     <name>$PROJ_DIR$\main.c</name>
   </file>
   <file>

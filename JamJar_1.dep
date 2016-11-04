@@ -2,10 +2,11 @@
 
 <project>
   <fileVersion>2</fileVersion>
-  <fileChecksum>2544063070</fileChecksum>
+  <fileChecksum>3577750551</fileChecksum>
   <configuration>
     <name>Debug</name>
     <outputs>
+<<<<<<< HEAD
       <file>$PROJ_DIR$\Debug\Obj\cstartup_M.o</file>
       <file>$PROJ_DIR$\Debug\Obj\cstartup_M.pbi</file>
       <file>$PROJ_DIR$\Debug\Obj\JamJar_1.pbd</file>
@@ -18,6 +19,48 @@
     </outputs>
     <file>
       <name>$PROJ_DIR$\main.c</name>
+=======
+      <file>$PROJ_DIR$\main.c</file>
+      <file>$PROJ_DIR$\cstartup_M.c</file>
+      <file>$PROJ_DIR$\..\Project test\LM4F120H5QR.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\cstartup_M.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
+      <file>$PROJ_DIR$\Debug\Exe\JamJar_1.out</file>
+      <file>$PROJ_DIR$\Debug\Obj\cstartup_M.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\JamJar_1.pbd</file>
+      <file>$TOOLKIT_DIR$\lib\shb_l.a</file>
+      <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
+      <file>$TOOLKIT_DIR$\lib\m7M_tls.a</file>
+      <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
+      <file>$PROJ_DIR$\Debug\List\JamJar_1.map</file>
+      <file>$TOOLKIT_DIR$\config\linker\TexasInstruments\TM4C123GH6.icf</file>
+    </outputs>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 6 13</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\main.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 5</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 4</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\cstartup_M.c</name>
+>>>>>>> 844d2ab2a16e8ad89327398c1b799a11b3aab8ce
       <outputs>
         <tool>
           <name>BICOMP</name>
@@ -25,11 +68,16 @@
         </tool>
         <tool>
           <name>ICCARM</name>
+<<<<<<< HEAD
           <file> 6</file>
+=======
+          <file> 7</file>
+>>>>>>> 844d2ab2a16e8ad89327398c1b799a11b3aab8ce
         </tool>
       </outputs>
     </file>
     <file>
+<<<<<<< HEAD
       <name>$PROJ_DIR$\cstartup_M.c</name>
       <outputs>
         <tool>
@@ -55,6 +103,22 @@
       <name>[MULTI_TOOL]</name>
       <tool>ILINK</tool>
     </forcedrebuild>
+=======
+      <name>$PROJ_DIR$\Debug\Exe\JamJar_1.out</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 13</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 14 7 4 9 10 11 12</file>
+        </tool>
+      </inputs>
+    </file>
+>>>>>>> 844d2ab2a16e8ad89327398c1b799a11b3aab8ce
   </configuration>
   <configuration>
     <name>Release</name>

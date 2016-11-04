@@ -25,7 +25,7 @@ if not "%~1" == "" goto debugFile
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5\common\bin\cspybat" -f "C:\Users\Pista\Documents\JamJarWiki\Git\JamJar\settings\JamJar_1.Debug.general.xcl" --backend -f "C:\Users\Pista\Documents\JamJarWiki\Git\JamJar\settings\JamJar_1.Debug.driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5\common\bin\cspybat" -f "C:\TiVA C Projects\JamJar\settings\JamJar_1.Debug.general.xcl" --backend -f "C:\TiVA C Projects\JamJar\settings\JamJar_1.Debug.driver.xcl" 
 
 @echo off 
 goto end 
@@ -34,7 +34,7 @@ goto end
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5\common\bin\cspybat" -f "C:\Users\Pista\Documents\JamJarWiki\Git\JamJar\settings\JamJar_1.Debug.general.xcl" "--debug_file=%~1" --backend -f "C:\Users\Pista\Documents\JamJarWiki\Git\JamJar\settings\JamJar_1.Debug.driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5\common\bin\cspybat" -f "C:\TiVA C Projects\JamJar\settings\JamJar_1.Debug.general.xcl" "--debug_file=%~1" --backend -f "C:\TiVA C Projects\JamJar\settings\JamJar_1.Debug.driver.xcl" 
 
 @echo off 
 :end
