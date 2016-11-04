@@ -1,19 +1,17 @@
 ###############################################################################
 #
-# IAR ELF Linker V7.70.2.11706/W32 for ARM                01/Nov/2016  16:36:16
+# IAR ELF Linker V7.70.2.11706/W32 for ARM                02/Nov/2016  17:55:34
 # Copyright 2007-2016 IAR Systems AB.
 #
-#    Output file  =  
-#        C:\Users\Pista\Documents\JamJarWiki\Git\JamJar\Debug\Exe\JamJar_1.out
-#    Map file     =  
-#        C:\Users\Pista\Documents\JamJarWiki\Git\JamJar\Debug\List\JamJar_1.map
+#    Output file  =  C:\TiVA C Projects\JamJar\Debug\Exe\JamJar_1.out
+#    Map file     =  C:\TiVA C Projects\JamJar\Debug\List\JamJar_1.map
 #    Command line =  
-#        C:\Users\Pista\Documents\JamJarWiki\Git\JamJar\Debug\Obj\cstartup_M.o
-#        C:\Users\Pista\Documents\JamJarWiki\Git\JamJar\Debug\Obj\main.o -o
-#        C:\Users\Pista\Documents\JamJarWiki\Git\JamJar\Debug\Exe\JamJar_1.out
-#        --redirect _Printf=_PrintfFull --redirect _Scanf=_ScanfFull --map
-#        C:\Users\Pista\Documents\JamJarWiki\Git\JamJar\Debug\List\JamJar_1.map
-#        --config "C:\Program Files (x86)\IAR Systems\Embedded Workbench
+#        "C:\TiVA C Projects\JamJar\Debug\Obj\cstartup_M.o" "C:\TiVA C
+#        Projects\JamJar\Debug\Obj\main.o" -o "C:\TiVA C
+#        Projects\JamJar\Debug\Exe\JamJar_1.out" --redirect _Printf=_PrintfFull
+#        --redirect _Scanf=_ScanfFull --map "C:\TiVA C
+#        Projects\JamJar\Debug\List\JamJar_1.map" --config "C:\Program Files
+#        (x86)\IAR Systems\Embedded Workbench
 #        7.5\arm\config\linker\TexasInstruments\TM4C123GH6.icf" --semihosting
 #        --entry __iar_program_start --vfe
 #
@@ -107,7 +105,7 @@ Zero (__iar_zero_init3)
 
     Module            ro code  ro data  rw data
     ------            -------  -------  -------
-C:\Users\Pista\Documents\JamJarWiki\Git\JamJar\Debug\Obj: [1]
+C:\TiVA C Projects\JamJar\Debug\Obj: [1]
     cstartup_M.o           58      272
     main.o              1 292                 9
     -------------------------------------------
@@ -206,7 +204,7 @@ exit                    0x000006db    0x4  Code  Gb  exit.o [3]
 main                    0x00000111   0xea  Code  Gb  main.o [1]
 
 
-[1] = C:\Users\Pista\Documents\JamJarWiki\Git\JamJar\Debug\Obj
+[1] = C:\TiVA C Projects\JamJar\Debug\Obj
 [2] = command line
 [3] = dl7M_tln.a
 [4] = m7M_tls.a

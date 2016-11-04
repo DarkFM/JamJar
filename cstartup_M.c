@@ -36,8 +36,16 @@ extern void I2C0_Handler( void );
 extern void PWM0Fault_Handler( void );
 extern void GPIOPortF_Handler( void );
 extern void ADC0SS0_Handler( void);
+extern void ADC0SS1_Handler( void);
+extern void ADC0SS2_Handler( void);
 extern void ADC0SS3_Handler( void);
-extern void ADC1SS3_Handler( void);
+
+extern void ADC1SS0_Handler( void);
+extern void ADC1SS1_Handler( void);
+//extern void ADC2SS2_Handler( void);
+//extern void ADC3SS3_Handler( void);
+
+
 
 
 typedef void( *intfunc )( void );
@@ -88,8 +96,8 @@ const intvec_elem __vector_table[] =
   0,
   0,
   ADC0SS0_Handler,
-  0,
-  0,
+  ADC0SS1_Handler,
+  ADC0SS2_Handler,
   ADC0SS3_Handler,
   0,
   0,
@@ -121,10 +129,9 @@ const intvec_elem __vector_table[] =
   0, 
   0, 
   0, 
-  0, 
-  0, 
-  0, 
-  ADC1SS3_Handler   
+  ADC1SS0_Handler, 
+  ADC1SS1_Handler
+  
 
 
 };
@@ -170,9 +177,19 @@ __weak void GPIOPortF_Handler( void ) { while (1) {} }
 #pragma call_graph_root = "interrupt"
 __weak void ADC0SS0_Handler( void ) { while (1) {} }
 #pragma call_graph_root = "interrupt"
-__weak void ADC0SS3_Handler( void ) { while (1) {} }
+__weak void ADC0SS1_Handler( void ) { while (1) {} }
 #pragma call_graph_root = "interrupt"
-__weak void ADC1SS3_Handler( void ) { while (1) {} }
+__weak void ADC0SS2_Handler( void ) { while (1) {} }
+#pragma call_graph_root = "interrupt"
+__weak void ADC0SS3_Handler( void ) { while (1) {} }
+
+#pragma call_graph_root = "interrupt"
+__weak void ADC1SS0_Handler( void ) { while (1) {} }
+#pragma call_graph_root = "interrupt"
+__weak void ADC1SS1_Handler( void ) { while (1) {} }
+
+
+
 
 
 #pragma call_graph_root = "interrupt"
