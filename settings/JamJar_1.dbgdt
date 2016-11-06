@@ -42,7 +42,7 @@
       </Disassembly>
       <WATCH_1>
         <expressions>
-          <item></item>
+          <item/>
         </expressions>
         <col-names>
           <item>Expression</item>
