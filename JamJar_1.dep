@@ -6,6 +6,7 @@
   <configuration>
     <name>Debug</name>
     <outputs>
+<<<<<<< HEAD
       <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
       <file>$TOOLKIT_DIR$\CMSIS\Include\arm_math.h</file>
       <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
@@ -64,12 +65,25 @@
       <file>$PROJ_DIR$\driverlib\sysctl.h</file>
       <file>$PROJ_DIR$\fpu.h</file>
       <file>$PROJ_DIR$\fpu.c</file>
+=======
+      <file>$PROJ_DIR$\..\Project test\LM4F120H5QR.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\..\..\ti\TivaWare_C_Series-2.1.3.156\inc\tm4c123gh6pm.h</file>
+      <file>$PROJ_DIR$\cstartup_M.c</file>
+      <file>$PROJ_DIR$\main.c</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\cstartup_M.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\cstartup_M.o</file>
+      <file>$PROJ_DIR$\Debug\Exe\JamJar_1.out</file>
+      <file>$PROJ_DIR$\Debug\Obj\JamJar_1.pbd</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
+>>>>>>> 3a61ed6726547d6aa59c16165ae8f5c32b2547d2
     </outputs>
     <file>
       <name>[ROOT_NODE]</name>
       <outputs>
         <tool>
           <name>ILINK</name>
+<<<<<<< HEAD
           <file> 27 25</file>
         </tool>
       </outputs>
@@ -99,6 +113,9 @@
         <tool>
           <name>ILINK</name>
           <file> 25</file>
+=======
+          <file> 7</file>
+>>>>>>> 3a61ed6726547d6aa59c16165ae8f5c32b2547d2
         </tool>
       </outputs>
       <inputs>
@@ -109,7 +126,7 @@
       </inputs>
     </file>
     <file>
-      <name>$PROJ_DIR$\main.c</name>
+      <name>$PROJ_DIR$\cstartup_M.c</name>
       <outputs>
         <tool>
           <name>BICOMP</name>
@@ -117,11 +134,15 @@
         </tool>
         <tool>
           <name>ICCARM</name>
+<<<<<<< HEAD
           <file> 20</file>
         </tool>
         <tool>
           <name>__cstat</name>
           <file> 36</file>
+=======
+          <file> 6</file>
+>>>>>>> 3a61ed6726547d6aa59c16165ae8f5c32b2547d2
         </tool>
       </outputs>
       <inputs>
@@ -136,10 +157,11 @@
       </inputs>
     </file>
     <file>
-      <name>$PROJ_DIR$\cstartup_M.c</name>
+      <name>$PROJ_DIR$\main.c</name>
       <outputs>
         <tool>
           <name>BICOMP</name>
+<<<<<<< HEAD
           <file> 23</file>
         </tool>
         <tool>
@@ -174,7 +196,20 @@
           <file> 21 11 16 31 13 26 0 2</file>
         </tool>
       </inputs>
+=======
+          <file> 9</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 4</file>
+        </tool>
+      </outputs>
+>>>>>>> 3a61ed6726547d6aa59c16165ae8f5c32b2547d2
     </file>
+    <forcedrebuild>
+      <name>[MULTI_TOOL]</name>
+      <tool>ILINK</tool>
+    </forcedrebuild>
   </configuration>
   <configuration>
     <name>Release</name>

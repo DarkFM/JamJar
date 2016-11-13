@@ -84,7 +84,30 @@
             </Window>
           </Windows>
         </PreferedWindows>
+<<<<<<< HEAD
       </Register>
+=======
+        <ShowCodeCoverage>1</ShowCodeCoverage>
+        <ShowInstrProfiling>1</ShowInstrProfiling>
+      </Disassembly>
+      <WATCH_1>
+        <expressions>
+          <item/>
+        </expressions>
+        <col-names>
+          <item>Expression</item>
+          <item>Location</item>
+          <item>Type</item>
+          <item>Value</item>
+        </col-names>
+        <col-widths>
+          <item>100</item>
+          <item>150</item>
+          <item>100</item>
+          <item>100</item>
+        </col-widths>
+      </WATCH_1>
+>>>>>>> 3a61ed6726547d6aa59c16165ae8f5c32b2547d2
       <Locals>
         <col-names>
           
