@@ -136,7 +136,7 @@
         </option>
         <option>
           <name>OGUseCmsisDspLib</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>GRuntimeLibThreads</name>
@@ -185,7 +185,7 @@
         </option>
         <option>
           <name>CCDefines</name>
-          <state></state>
+          <state>TARGET_IS_TM4C123_RB1</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -1926,13 +1926,7 @@
     <name>$PROJ_DIR$\cstartup_M.c</name>
   </file>
   <file>
-    <name>$PROJ_DIR$\..\Project test\LM4F120H5QR.h</name>
-  </file>
-  <file>
     <name>$PROJ_DIR$\main.c</name>
-  </file>
-  <file>
-    <name>$PROJ_DIR$\..\..\..\..\..\..\ti\TivaWare_C_Series-2.1.3.156\inc\tm4c123gh6pm.h</name>
   </file>
 </project>
 

@@ -2,7 +2,11 @@
 
 "C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5\arm\bin\armlmiftdi.dll" 
 
+<<<<<<< HEAD
+"C:\TiVA C Projects\Practice3 - CV quantizer\Debug\Exe\JamJar_1.out" 
+=======
 "C:\Users\Pista\Documents\JamJarWiki\Git\JamJar\Debug\Exe\JamJar_1.out" 
+>>>>>>> 3a61ed6726547d6aa59c16165ae8f5c32b2547d2
 
 --plugin "C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5\arm\bin\armbat.dll" 
 
