@@ -45,6 +45,16 @@ extern void ADC1SS1_Handler( void);
 //extern void ADC2SS2_Handler( void);
 //extern void ADC3SS3_Handler( void);
 
+extern void PWM0_0_Handler( void);
+extern void PWM0_1_Handler( void);
+extern void PWM0_2_Handler( void);
+
+
+extern void PWM1_0_Handler( void);
+extern void PWM1_1_Handler( void);
+extern void PWM1_2_Handler( void);
+extern void PWM1_3_Handler( void);
+
 
 
 
@@ -91,9 +101,9 @@ const intvec_elem __vector_table[] =
   SSI0_Handler,
   I2C0_Handler,
   PWM0Fault_Handler,
-  0,
-  0,
-  0,
+  PWM0_0_Handler,
+  PWM0_1_Handler,
+  PWM0_2_Handler,
   0,
   ADC0SS0_Handler,
   ADC0SS1_Handler,
@@ -130,7 +140,95 @@ const intvec_elem __vector_table[] =
   0, 
   0, 
   ADC1SS0_Handler, 
-  ADC1SS1_Handler
+  ADC1SS1_Handler,
+  0,
+  0,
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0,
+  0,
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0,
+  0,
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0,
+  0,
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0,
+  0,
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0,
+  0,
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0,
+  0,
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0,
+  0,
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0, 
+  0,
+  0,
+  0,
+  0,
+  PWM1_0_Handler,
+  PWM1_1_Handler,
+  PWM1_2_Handler,
+  PWM1_3_Handler
   
 
 
@@ -194,6 +292,25 @@ __weak void ADC1SS1_Handler( void ) { while (1) {} }
 
 #pragma call_graph_root = "interrupt"
 __weak void PWM0Fault_Handler( void ) { while (1) {} }
+
+#pragma call_graph_root = "interrupt"
+__weak void PWM0_0_Handler( void ) { while (1) {} }
+#pragma call_graph_root = "interrupt"
+__weak void PWM0_1_Handler( void ) { while (1) {} }
+#pragma call_graph_root = "interrupt"
+__weak void PWM0_2_Handler( void ) { while (1) {} }
+
+#pragma call_graph_root = "interrupt"
+__weak void PWM1_0_Handler( void ) { while (1) {} }
+#pragma call_graph_root = "interrupt"
+__weak void PWM1_1_Handler( void ) { while (1) {} }
+#pragma call_graph_root = "interrupt"
+__weak void PWM1_2_Handler( void ) { while (1) {} }
+#pragma call_graph_root = "interrupt"
+__weak void PWM1_3_Handler( void ) { while (1) {} }
+
+
+
 
 
 void __cmain( void );
