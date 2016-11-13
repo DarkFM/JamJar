@@ -6,32 +6,23 @@
   <configuration>
     <name>Debug</name>
     <outputs>
-      <file>$PROJ_DIR$\..\Project test\LM4F120H5QR.h</file>
-      <file>$PROJ_DIR$\..\..\..\..\..\..\ti\TivaWare_C_Series-2.1.3.156\inc\tm4c123gh6pm.h</file>
-      <file>$PROJ_DIR$\cstartup_M.c</file>
-      <file>$PROJ_DIR$\main.c</file>
-      <file>$PROJ_DIR$\Debug\Obj\main.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\cstartup_M.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\cstartup_M.o</file>
-      <file>$PROJ_DIR$\Debug\Exe\JamJar_1.out</file>
       <file>$PROJ_DIR$\Debug\Obj\JamJar_1.pbd</file>
       <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
+      <file>$PROJ_DIR$\Debug\Exe\JamJar_1.out</file>
+      <file>$PROJ_DIR$\..\..\..\..\..\..\ti\TivaWare_C_Series-2.1.3.156\inc\tm4c123gh6pm.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\cstartup_M.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\cstartup_M.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.o</file>
+      <file>$PROJ_DIR$\main.c</file>
+      <file>$PROJ_DIR$\cstartup_M.c</file>
+      <file>$PROJ_DIR$\..\Project test\LM4F120H5QR.h</file>
     </outputs>
     <file>
-      <name>[ROOT_NODE]</name>
-      <outputs>
-        <tool>
-          <name>ILINK</name>
-          <file> 7</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\cstartup_M.c</name>
+      <name>$PROJ_DIR$\main.c</name>
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 5</file>
+          <file> 1</file>
         </tool>
         <tool>
           <name>ICCARM</name>
@@ -40,15 +31,24 @@
       </outputs>
     </file>
     <file>
-      <name>$PROJ_DIR$\main.c</name>
+      <name>$PROJ_DIR$\cstartup_M.c</name>
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 9</file>
+          <file> 4</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 4</file>
+          <file> 5</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 2</file>
         </tool>
       </outputs>
     </file>
