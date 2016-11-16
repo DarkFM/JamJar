@@ -141,7 +141,7 @@ const intvec_elem __vector_table[] =
   0, 
   ADC1SS0_Handler, 
   ADC1SS1_Handler,
-  0,
+  0,//ADC1SS2_Handler,
   0,
   0, 
   0, 
@@ -285,7 +285,8 @@ __weak void ADC0SS3_Handler( void ) { while (1) {} }
 __weak void ADC1SS0_Handler( void ) { while (1) {} }
 #pragma call_graph_root = "interrupt"
 __weak void ADC1SS1_Handler( void ) { while (1) {} }
-
+//#pragma call_graph_root = "interrupt"
+//__weak void ADC1SS2_Handler( void ) { while (1) {} }
 
 
 
