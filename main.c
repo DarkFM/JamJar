@@ -27,6 +27,7 @@ void ADC0SS1_Handler(void);
 void ADC1SS1_Handler(void);
 void ADC0_SS1_Init(void);
 void ADC1_SS1_Init(void);
+void SSI_0_Init(void);
 void delay(unsigned long time);
 void PortF_init(void);
 void PortE_Init(void);
@@ -115,6 +116,7 @@ LOAD_CMPB = (LOAD_VAL*75)/(100);
   PWM0_Init();
   ADC0_SS1_Init();
   ADC1_SS1_Init();
+  SSI_0_Init();
   //WTIMER0(); 
  // WTIMER0_Period_Init();
   
@@ -850,9 +852,12 @@ void WTIMER0_Period_Init(void)
 //event. To re-enable the timer, repeat the sequence. A timer configured in Periodic mode reloads
 //the timer and continues counting after the time-out event.
 
+   
+    
   
 }
 
+<<<<<<< HEAD
 /*
 void QUANTIZER(uint8_t sample_source_sel, uint8_t sample_rate_sel )
 {
@@ -876,3 +881,38 @@ void QUANTIZER(uint8_t sample_source_sel, uint8_t sample_rate_sel )
   
 }
 */
+=======
+/*--------------------------------------------------------- SPI INITALIZATION -----------------------------------------------------------------------*/
+void SSI_0_Init(void) {
+ 
+  SYSCTL_RCGCSSI_R |= (0x1 << 0); // SSI Module 0 Run Mode Clock Gate Controll: ENABLED 
+  delay(1000);
+  SYSCTL_RCGCGPIO_R |= (0x1 << 0); // I/O Run Mode Clock Gate Controll: PORT A ENABLED
+  delay(1000);
+  GPIO_PORTA_AFSEL_R |= (0x1 << 1) | (0x1 << 2) | (0x1 << 3); // Set Pins PA 2,3,4 to SSI mode
+  GPIO_PORTA_PCTL_R |= (0x2 << 4) | (0x2 << 8) | (0x2 << 12); // GPIO port controll 
+  GPIO_PORTA_DEN_R |= (0x1 << 1) | (0x1 << 2) | (0x1 << 3);
+/* *******In addition, the drive strength,
+drain select and pull-up/pull-down functions must be configured. Refer to “General-Purpose
+Input/Outputs (GPIOs)” on page 649 for more information.
+  
+  Note: Pull-ups can be used to avoid unnecessary toggles on the SSI pins, which can take the
+slave to a wrong state. In addition, if the SSIClk signal is programmed to steady state
+High through the SPO bit in the SSICR0 register, then software must also configure the
+GPIO port pin corresponding to the SSInClk signal as a pull-up in the GPIO Pull-Up
+Select (GPIOPUR) register. ****** */
+  SSI0_CR1_R |= (0x1 << 1) | (0x0 << 2 ); // SSI OPERATIONS ENABLED, SET AS MASTER 
+  SSI0_CC_R |= (0x5 << 0); //PIOSC CLOCK SELECTED 
+  SSI0_CPSR_R |= (0x2 << 0 ); // SSI0_CLK = SysCLK / (CPDVSR *(1+SCR)) SPDVSR = 2-254
+  SSI0_CR0_R |= (0x7 << 0)|(0x0 << 4)|(0x1 << 8); //SELECT SSI FRAM FORMAT | SSI CLOCK PHASE | SSI0_CLK = SysCLK / (CPDVSR *(1+SCR)); SCR = 0-255 (Bits 8-15)         
+  /*¦ 
+  Serial clock rate (SCR)
+¦ Desired clock phase/polarity, if using Freescale SPI mode (SPH and SPO)
+¦ The protocol mode: Freescale SPI, TI SSF, MICROWIRE (FRF)
+¦ The data size (DSS)*/
+  
+}
+
+
+
+>>>>>>> 5db2417bc88c3700654c03891319d3e41eab8162
