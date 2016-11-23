@@ -12,8 +12,15 @@
 #include "driverlib/sysctl.h"
 #include "driverlib/rom.h"
 
+
+void UART_Init(void);
+char Receive_UART(void);
+void Send_UART_Char(unsigned char c);
+void print_string_UART(unsigned char *c);
 //void PortF_Interrupt_Init(void);
 void GPIOPortF_Handler(void);
+void GPIOPortC_Handler(void);
+void GPIOPortE_Handler(void);
 void SysTick_init(void);
 //void SysTick_Handler(void);
 void ADC0SS1_Handler(void);
@@ -36,24 +43,52 @@ void WTIMER0_Period_Init(void);
 
 unsigned long led;
 unsigned int time_10ms = 160000;
-volatile static unsigned long OCT_RANGE_SEL;
-volatile static unsigned long OCT_SHIFT_SEL;
-volatile static unsigned long SAMPLE_RATE;
-volatile static unsigned long POT4;
+
+volatile static uint16_t EXPO_CONV_SAMPLE;
+volatile static uint16_t OCT_RANGE_SEL;
+volatile static uint16_t OCT_OFFSET_SEL;
+volatile static uint16_t SAMPLE_RATE;
+volatile static uint16_t POT4;
 volatile static uint16_t LFO_SAMPLE;
 volatile static uint16_t POT5;
+
+volatile static uint16_t OCTAVE_START;
+volatile static uint16_t OCTAVE_START_DEFAULT = 4;
+volatile static uint8_t OCTAVE_RANGE = 1;
+
+volatile uint8_t sample_src_switch = 0;
+volatile uint8_t sample_rate_switch = 0;
+volatile uint8_t quant_to_hold = 0;
+
+
+// OCTAVE RANGE VARIABLES
+uint8_t span_offset = 0; 
 //volatile static unsigned long POT_SAMPLES;
 //volatile static int int_count = 0;
 
 //volatile unsigned long temp_rate;
 float temp_rate;
 volatile static unsigned long store;
-unsigned long LOAD_VAL = 6500;        // MAX value is 2^16 = 65536
+unsigned long LOAD_VAL = 13000;     //6500 gives 500hz   // MAX value is 2^16 = 65536
 unsigned long LOAD_CMPA;
 unsigned long LOAD_CMPB;
 unsigned long old_sample = 0.0;
-//float old_rate = 0.0;
+
 bool stable_sample = false;
+
+
+volatile static char midi[10][12] ={{0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0A,0x0B},
+                                    {0x0C,0x0D,0x0E,0x0F,0x10,0x11,0x12,0x13,0x14,0x15,0x16,0x17},
+                                    {0x18,0x19,0x1A,0x1B,0x1C,0x1D,0x1E,0x1F,0x20,0x21,0x22,0x23},
+                                    {0x24,0x25,0x26,0x27,0x28,0x29,0x2A,0x2B,0x2C,0x2D,0x2E,0x2F},
+                                    {0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,0x39,0x3A,0x3B},
+                                    {0x3C,0x3D,0x3E,0x3F,0x40,0x41,0x42,0x43,0x44,0x45,0x46,0x47},
+                                    {0x48,0x49,0x4A,0x4B,0x4C,0x4D,0x4E,0x4F,0x50,0x51,0x52,0x53},
+                                    {0x54,0x55,0x56,0x57,0x58,0x59,0x5A,0x5B,0x5C,0x5D,0x5E,0x5F},
+                                    {0x60,0x61,0x62,0x63,0x64,0x65,0x66,0x67,0x68,0x69,0x6A,0x6B},
+                                    {0x6C,0x6D,0x6E,0x6F,0x70,0x71,0x72,0x73,0x74,0x75,0x76,0x77}
+                               };
+                               
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -76,6 +111,7 @@ LOAD_CMPB = (LOAD_VAL*75)/(100);
   PortE_Init();
   PortF_init();
   SysTick_init(); 
+  UART_Init();
   PWM0_Init();
   ADC0_SS1_Init();
   ADC1_SS1_Init();
@@ -87,7 +123,7 @@ LOAD_CMPB = (LOAD_VAL*75)/(100);
 
   while(1){
   //sample_rate(SAMPLE_RATE);
-
+    //print_string_UART("ab");
     
   }
   
@@ -101,9 +137,41 @@ void PortE_Init(void)
   SYSCTL_RCGCGPIO_R |= (1 << 4);        // enable clock port E
     delay(1000);
   GPIO_PORTE_DIR_R &=  ~((1 << 1) | (1 << 2) | (1 << 0)| (1 << 3));       // set pin 0,1,2 input
-  GPIO_PORTE_AFSEL_R |= (1 << 1) | (1 << 2) | (1 << 0)| (1 << 3);      // making sure alternate funtionality is selected
-  GPIO_PORTE_DEN_R &= ~((1 << 1) | (1 << 2) | (1 << 0)| (1 << 3));        // DISABLE digital functionality on pin, sets it up for analog mode
-  GPIO_PORTE_AMSEL_R |= (1 << 1) | (1 << 2) | (1 << 0)| (1 << 3);        // ENABLE ANALOG MODE FOR PE0,1.2
+  GPIO_PORTE_AFSEL_R |= (1 << 1) | (1 << 2) | (1 << 3);      // making sure alternate funtionality is selected
+  GPIO_PORTE_DEN_R |= (1 << 0); // enable digitial func for PE0
+  GPIO_PORTE_DEN_R &= ~((1 << 1) | (1 << 2) | (1 << 3));        // DISABLE digital functionality on pin, sets it up for analog mode
+  GPIO_PORTE_AMSEL_R |= (1 << 1) | (1 << 2) | (1 << 3);        // ENABLE ANALOG MODE FOR PE1.2
+  
+  // *******PE0 Switch trigger  ******
+  
+  GPIO_PORTE_IM_R &= ~(1 << 0);
+  GPIO_PORTE_IS_R &= ~(1 << 0); 
+  GPIO_PORTE_RIS_R |= (1 << 0);
+  GPIO_PORTE_IBE_R |= (1 << 0);      // Interrupt on both edges of the switch
+  GPIO_PORTE_PDR_R |= (1 << 0);
+  
+  
+      // PORTE -> IRQ = 4
+    NVIC_PRI0_R &= ~(0x7 << 5);    // set the priority to 0
+    NVIC_EN0_R |= (1 << 4);      // Set bit 2 as the IRQ for PORTC interrupt is 2 in the vector table
+    
+    //4. Unmask the port by setting the IME field in the GPIOIM register
+    GPIO_PORTE_IM_R |= (1 << 0);
+}
+
+
+// PE0 interrupt handler for sample rate switch
+void GPIOPortE_Handler(void){
+  GPIO_PORTE_ICR_R |= (1 << 0) ;    // ACK INTERRUPT
+  uint8_t data = GPIO_PORTC_DATA_R & 0xFF;
+  
+  if(data == 0x01)      // sample rate witch PE0
+    sample_rate_switch = 1;
+  else
+    sample_rate_switch = 0;
+
+  
+  
 }
 
 // used to ADC sampling -> PD3, PD2
@@ -135,18 +203,29 @@ void PortB_Init(void)
 // USED FOR WTIMER0
 void PortC_Init(void)
 {
-  SYSCTL_RCGCGPIO_R |= (1u << 2);        // enable clock for port F
+  SYSCTL_RCGCGPIO_R |= (1u << 2);        // enable clock for port C
   //SysTick_wait_time(10000);// allow for clock to stabilize
   delay(1000);
-  GPIO_PORTC_DIR_R |= (1 << 4) | (1 << 5);        // set pin 4,5 to output
+  GPIO_PORTC_DIR_R |= (1 << 5);        // set pin 5 to output. set pin 4,6,7 to input
   GPIO_PORTC_AMSEL_R &= 0x00;   // disable analog function
-  GPIO_PORTC_DEN_R |= (1 << 4) | (1 << 5)| (1 << 6);       // enable digital functionality on pin
-  GPIO_PORTC_AFSEL_R |= (1 << 4) | (1 << 5);      // making sure alt funtionality is selected 
-  GPIO_PORTC_PCTL_R |= (7 << 16) | (7 << 20);
+  GPIO_PORTC_DEN_R |= (1 << 4) | (1 << 5)| (1 << 6) | (1 << 7);       // enable digital functionality on pin
+  GPIO_PORTC_AFSEL_R |=  (1 << 5);      // making sure alt funtionality is selected 
+  GPIO_PORTC_PCTL_R |=  (7 << 20);
   
-  GPIO_PORTC_PDR_R |= (1 << 6);         // allows for positive logic on the pin
+  GPIO_PORTC_PDR_R |= (1 << 4) | (1 << 6) | (1 << 7);         // allows for positive logic on the pin
+  
+  // ********switch triggers*******
+  GPIO_PORTC_IM_R &= ~( (1 << 4) | (1 << 7));
+  GPIO_PORTC_IS_R &= ~( (1 << 4) | (1 << 7)); 
+  GPIO_PORTC_RIS_R |= (1 << 4) | (1 << 7);
+  GPIO_PORTC_IBE_R |= (1 << 4) | (1 << 7);      // Interrupt on both edges of the switch
+  
+  
+  
+  
   GPIO_PORTC_ADCCTL_R |= (1 << 6);     // CONFIGURE PC6 TO TRIGGER ADC
   
+  // ********************* GPIO TRIGGER ADC ***************** //
 //  To prevent false interrupts, the following steps should be taken when re-configuring GPIO
 //edge and interrupt sense registers:
 //1. Mask the corresponding port by clearing the IME field in the GPIOIM register.
@@ -157,15 +236,39 @@ void PortC_Init(void)
   
 //3. Clear the GPIORIS register.
   GPIO_PORTC_RIS_R |= (1 << 6);
-  
-//4. Unmask the port by setting the IME field in the GPIOIM register
-    GPIO_PORTC_IM_R |= (1 << 6);
-
+    
+    // PORTC -> IRQ = 2
+    NVIC_PRI0_R &= ~(0x7 << 21);    // set the priority to 0
+    NVIC_EN0_R |= (1 << 2);      // Set bit 2 as the IRQ for PORTC interrupt is 2 in the vector table
+    
+    //4. Unmask the port by setting the IME field in the GPIOIM register
+    GPIO_PORTC_IM_R |= (1 << 6) | (1 << 4) | (1 << 7);
 }
 
 
- // configuring ADC0, SS1, AIN1-4, -> PE2, PE1, PE0, PD3
-// used by PWM
+// used for sample source and quant or S & hold switch select
+void GPIOPortC_Handler(void){
+  GPIO_PORTC_ICR_R |= (1 << 4) | (1 << 6);    // ACK INTERRUPT
+
+  uint8_t data = GPIO_PORTC_DATA_R & 0xFF;
+  
+  if(data == 0x10)      // sampling source switch set to LFO
+    sample_src_switch = 1;
+  else
+    sample_src_switch = 0;
+ 
+  if(data == 0x80)     // QUANT OR SAMPLE AND HOLD SWITCH. PC7
+    quant_to_hold = 1;
+  else
+    quant_to_hold = 0;
+
+
+
+  
+}
+
+ // configuring ADC0, SS1, AIN0,1&2 -> PE3, PE2, PE1
+// uses PWM
 void ADC0_SS1_Init(void) {
   
   
@@ -180,17 +283,17 @@ void ADC0_SS1_Init(void) {
   ADC0_ACTSS_R &= ~(1 << 1); // disable ss1 first. we are using SS1 cause we need 4 samples
   
   // configure trigger event for the sample sequencer in the ADCEMUX register
-  ADC0_EMUX_R |= (0x6 << 4);//(0x6 << 4); //(0xF << 4);  // TRIGGER EVENT
+  ADC0_EMUX_R |= (0x6 << 4);//(0x6 << 4); //(0xF << 4);  // TRIGGER EVENT is PWM gen0
  
   ADC0_TSSEL_R &= ~(0x3 << 4);  // select PWM0 and GEN0
   
   
   //For each sample in the sample sequence, configure the corresponding input source in the ADCSSMUXn register.
-  ADC0_SSMUX1_R  |= (0x1 << 0) | (0x2 << 4) | (0x3 << 8) | (0x4 << 12); // MUX1(for sequancer 1) is given the value of 1, 2, 3, 4
-                                        // which corresponds to (AIN1, 2, 3, 4)-> (PE2,1,0 and PD3)
+  ADC0_SSMUX1_R  |= (0x0 << 0) | (0x1 << 4) | (0x2 << 8);// | (0x4 << 12); // MUX1(for sequancer 1) is given the value of 1, 2
+                                        // which corresponds to (AIN0,1, 2)-> (PE3,2,1)
   
   //For each sample in the sample sequence, configure the sample control bits 
-  ADC0_SSCTL1_R |= (1 << 14) | (1 << 13);  //|  (1 << 10) | (1 << 6) | ( 1 << 2 ); // set end of sequence and enable interrupt so
+  ADC0_SSCTL1_R |= (1 << 10) | (1 << 9);  //|  (1 << 10) | (1 << 6) | ( 1 << 2 ); // set end of sequence and enable interrupt so
                                        // to trigger at end of ADC conversion instead of by pooling
                                         // sets interrupt for each sample of the sequence
   
@@ -208,6 +311,69 @@ void ADC0_SS1_Init(void) {
     //Enable the sample sequencer logic by setting the corresponding ASENn bit
   //in the ADCACTSS register.
   ADC0_ACTSS_R |= (1 << 1); // enable ADC sequencer 1
+}
+
+
+// handles the interrupt for the PWM ADC tigger (POT Samples)
+void ADC0SS1_Handler(void){
+  
+  ADC0_ISC_R |= (1 << 1);       // Acknowledge interrupt by clearing interrupt
+  
+  EXPO_CONV_SAMPLE = ADC0_SSFIFO1_R; //PE3 -> AIN0
+  OCT_RANGE_SEL = ADC0_SSFIFO1_R;// PE2 -> AIN1
+  OCT_OFFSET_SEL = ADC0_SSFIFO1_R;// PE1 -> AIN2        // max range is 4
+  //SAMPLE_RATE = ADC0_SSFIFO1_R;// PE0 (AKA -PE0) -> AIN3
+ // POT4 = ADC0_SSFIFO1_R; // PD3 -> AIN4
+  
+    if(OCT_OFFSET_SEL <= 455 && OCTAVE_START != 0)
+        OCTAVE_START = OCTAVE_START_DEFAULT - 4;
+    else if(OCT_OFFSET_SEL > 455 && OCT_OFFSET_SEL <= 910 && OCTAVE_START != 1)
+        OCTAVE_START = OCTAVE_START_DEFAULT - 3;
+    else if(OCT_OFFSET_SEL > 910 && OCT_OFFSET_SEL <= 1365 && OCTAVE_START != 2)
+        OCTAVE_START = OCTAVE_START_DEFAULT - 2;
+    else if(OCT_OFFSET_SEL > 1365 && OCT_OFFSET_SEL <= 1820 && OCTAVE_START != 3)
+        OCTAVE_START = OCTAVE_START_DEFAULT - 1;
+    else if(OCT_OFFSET_SEL > 1820 && OCT_OFFSET_SEL <= 2275)
+        OCTAVE_START = OCTAVE_START_DEFAULT;
+    else if(OCT_OFFSET_SEL > 2275 && OCT_OFFSET_SEL <= 2730 && OCTAVE_START != 5)
+        OCTAVE_START = OCTAVE_START_DEFAULT + 1;
+    else if(OCT_OFFSET_SEL > 2730 && OCT_OFFSET_SEL <= 3185 && OCTAVE_START != 6)
+        OCTAVE_START = OCTAVE_START_DEFAULT + 2;
+    else if(OCT_OFFSET_SEL > 3185 && OCT_OFFSET_SEL <= 3640 && OCTAVE_START != 7)
+        OCTAVE_START = OCTAVE_START_DEFAULT + 3;
+    else if(OCT_OFFSET_SEL > 3640 && OCTAVE_START != 8)
+        OCTAVE_START = OCTAVE_START_DEFAULT + 4;
+    
+ // *************OCTAVE RANGE SELECT **********
+    uint8_t max_span = 8 - OCTAVE_START;        // determines the max range of the octave select. 
+                                        // e.g if OCTAVE_START = 5, then max span is 8-5 = 3, Meaning that is doesnt go past max octaves of 8
+    uint16_t span_pot_incr = (4095 / max_span );        // divides to determine increment depending on the max offset
+
+
+    // imcrement muliplication determins how many if statements are used.
+    // A check to make sure span_offset is not constantly overwritten
+    // the ranges depend on the offset value
+    // THIS COULD POSE ISSUES WHEN OCT_RANGE_SEL == 4095
+    if( span_pot_incr <= 4100 && OCT_RANGE_SEL < span_pot_incr && span_offset != 1)
+      span_offset = 1;
+    else if((span_pot_incr * 2) <= 4100 && OCT_RANGE_SEL >= span_pot_incr && OCT_RANGE_SEL < (span_pot_incr * 2) && span_offset != 2)
+      span_offset = 2;
+    else if((span_pot_incr * 3) <= 4100 && OCT_RANGE_SEL >= (span_pot_incr*2) && OCT_RANGE_SEL < (span_pot_incr * 3) && span_offset != 3)
+      span_offset = 3;        
+    else if((span_pot_incr * 4) <= 4100 && OCT_RANGE_SEL >= (span_pot_incr*3) && OCT_RANGE_SEL < (span_pot_incr * 4) && span_offset != 4)
+      span_offset = 4;  
+    else if((span_pot_incr * 5) <= 4100 && OCT_RANGE_SEL >= (span_pot_incr*4) && OCT_RANGE_SEL < (span_pot_incr * 5) && span_offset != 5)
+      span_offset = 5;          
+    else if((span_pot_incr * 6) <= 4100 && OCT_RANGE_SEL >= (span_pot_incr*5) && OCT_RANGE_SEL < (span_pot_incr * 6) && span_offset != 6)
+      span_offset = 6; 
+    else if((span_pot_incr * 7) <= 4100 && OCT_RANGE_SEL >= (span_pot_incr*6) && OCT_RANGE_SEL < (span_pot_incr * 7) && span_offset != 7)
+      span_offset = 7;  
+    else if((span_pot_incr * 8) <= 4100 && OCT_RANGE_SEL >= (span_pot_incr*7) && span_offset != 8)
+      span_offset = 8;          
+
+    
+    
+  GPIO_PORTF_DATA_R ^= (1 << 3); // green 
 }
 
 
@@ -230,14 +396,14 @@ void ADC1_SS1_Init(void)
                 //(0x5 << 4);  // TRIGGER FROM PWM_GEN0
                                 
   //For each sample in the sample sequence, configure the corresponding input source in the ADCSSMUXn register.
-  ADC1_SSMUX1_R  |= (0x0 << 0) | (0x5 << 4); // select AIN0 & AIN5 as the sample input for this sequencer
+  ADC1_SSMUX1_R  |= (0x5 << 0); // select AIN5 as the sample input for this sequencer
   
   //For each sample in the sample sequence, configure the sample control bits 
-  ADC1_SSCTL1_R |= (1 << 5) | (1 << 6); // set end of sequence and enable interrupt so
+  ADC1_SSCTL1_R |= (1 << 2) | (1 << 1); // set end of sequence and enable interrupt so
                                        // to trigger at end of ADC conversion instead of by pooling
   
   //If interrupts are to be used, set the corresponding MASK bit in the ADCIM register.
-  ADC1_IM_R |= (1 << 1);        // allow interrupts to be sent for sequencer 2 
+  ADC1_IM_R |= (1 << 1);        // allow interrupts to be sent for sequencer 1 
  
   //assign priority. IRQ = 49
   ADC1_SSPRI_R |= (1 << 4);    // ASSIGN priority of 1 to SS1
@@ -250,31 +416,20 @@ void ADC1_SS1_Init(void)
 }
 
 
-// handles the interrupt for the PWM ADC tigger (POT Samples)
-void ADC0SS1_Handler(void){
-  
-  ADC0_ISC_R |= (1 << 1);       // Acknowledge interrupt by clearing interrupt
 
-  OCT_RANGE_SEL = ADC0_SSFIFO1_R;// PE2 -> AIN1
-  OCT_SHIFT_SEL = ADC0_SSFIFO1_R;// PE1 -> AIN2
-  SAMPLE_RATE = ADC0_SSFIFO1_R;// PE0 (AKA -PE0) -> AIN3
-  POT4 = ADC0_SSFIFO1_R; // PD3 -> AIN4
-  
-   
-  GPIO_PORTF_DATA_R ^= (1 << 3); // green 
-}
-
-
-// handles LFO sampling from TIMER ****not anymore
-// handles 555 timer trigger
+// handles LFO sampling from NE555 Trigger
 void ADC1SS1_Handler(void)
 {
   ADC1_ISC_R |= (1 << 2);       // Acknowledge interrupt by clearing interrupt
+  GPIO_PORTC_ICR_R |= (1 << 6); // ACK interrupt from GPIO pin
+  ADC1_ACTSS_R &= ~(1 << 1);    // disable ADC to allow for new trigger detection
   
-  LFO_SAMPLE = ADC1_SSFIFO1_R;  // AIN0 -> PE3
-  POT5 = ADC1_SSFIFO1_R;
+  LFO_SAMPLE = ADC1_SSFIFO1_R;  // AIN5 -> PD2
+  //POT5 = ADC1_SSFIFO1_R;
   //GPIO_PORTF_DATA_R = 0;
   GPIO_PORTF_DATA_R ^= (1 << 2);// led blue 
+  GPIO_PORTC_DATA_R ^= (1 << 7);
+  ADC1_ACTSS_R |= (1 << 1);     // enable ADC 
 }
 
 
@@ -305,7 +460,7 @@ void PortF_init(void) {
 
   GPIO_PORTF_DIR_R |= ((1 << 1) | (1 << 2) | (1 << 3));        // set pin 1,2,3 to output
   GPIO_PORTF_DEN_R |= ((1 << 1) | (1 << 2) | (1 << 3));        // enable digital functionality on pin
-  GPIO_PORTF_AFSEL_R &= ((0 << 1) | (0 << 2) | (0 << 3));      // making sure GPIO funtionality is selected 
+  GPIO_PORTF_AFSEL_R &= ~((1 << 1) | (1 << 2) | (1 << 3));      // making sure GPIO funtionality is selected 
 }
 
 
@@ -382,7 +537,7 @@ void sample_rate(unsigned long rate){        // takes the trimpot sampled value
   GPIO_PORTF_DATA_R |= (1 << 3); // green 
   //GPIO_PORTF_DATA_R = 0;  
   }
-  if ( OCT_SHIFT_SEL >= 4000 ){//POT1 < 4 && POT2 >= 4 && POT3 < 4 && POT4 < 4){
+  if ( OCT_RANGE_SEL >= 4000 ){//POT1 < 4 && POT2 >= 4 && POT3 < 4 && POT4 < 4){
      // GPIO_PORTF_DATA_R &= 0;  
      // GPIO_PORTF_DATA_R |= (1 << 2);// blue
 
@@ -469,7 +624,7 @@ void PWM0_Init(void){
 }
 
 
-// this doesnt work
+// this doesnt work/ not using interrupts
 void PWM0_0_Handler(void)
 {
   PWM0_ISC_R |= (1 << 0);       // ack interrupt by clearing it
@@ -484,6 +639,119 @@ void delay(unsigned long time){
   while(time--){}
    //return var;
 }
+
+// Tx - > PD7 , Rx -> PD6
+void UART_Init(void){            // should be called only once
+
+  //1. Enable the UART module using the RCGCUART register (see page 342).
+  SYSCTL_RCGCUART_R |= (1u << 2);       // enable UART2 
+  delay(1000);
+  
+  //2. Enable the clock to the appropriate GPIO module via the RCGCGPIO register (see page 338). To find out which GPIO port to enable, refer to Table 23-5 on page 1344.
+  SYSCTL_RCGCGPIO_R |= (1u << 3);       // enable clock for port D
+  delay(1000);
+  
+  //3. Set the GPIO AFSEL bits for the appropriate pins (see page 668). To determine which GPIOs toconfigure, see Table 23-4 on page 1337.
+  GPIO_PORTD_AFSEL_R |= (1u << 7) | (1u << 6);  // select alternate functions for PD7&6
+  
+  //4. Configure the GPIO current level and/or slew rate as specified for the mode selected (seepage 670 and page 678).
+
+  //5. Configure the PMCn fields in the GPIOPCTL register to assign the UART signals to the appropriate pins (see page 685 and Table 23-5 on page 1344)
+  GPIO_PORTD_PCTL_R |= (1u << 28) | (1u << 24);   // Select UART functionality for PD7&6
+  
+  // enable digital functions for the pins
+  GPIO_PORTD_DEN_R |= (1u << 7) | (1u << 6);    // allow digital levels 0/3.3 on the pins
+  
+  // set direction of pins
+  GPIO_PORTD_DIR_R &= ~(1u << 6);
+  
+  // set the baud rate on the UART: clk(Hz)/16/(baud rate)
+  UART2_CTL_R &= ~(1u << 0);    // disable UART before modify
+  UART2_FBRD_R |= 0u;        // assign 11 -> gotten from decimal of result: 64*dec
+  UART2_IBRD_R |= 32u;        // assign 104 -> integer part of result from eqn above
+  
+  // Configure the UART clock source by writing to the UARTCC register
+  UART2_CC_R   |= UART_CC_CS_SYSCLK;    //System clock (based on clock source and divisor factor)
+  
+  //set word length of the FIFO in UART and enable FIFO
+  UART2_LCRH_R |= (1u << 6) | (1u << 5);        // select word length of 8 bits
+  UART2_LCRH_R |= UART_LCRH_FEN;                // UART Enable FIFOs
+  
+  // enable UART interrupt for recieve and transmit
+ // UART2_IFLS_R |= (1 << 4); // trigger when RX fifo is 1/2 full
+ // UART2_IFLS_R |= (1 << 1); //trigger when TX FIFO is 1/2 full
+  
+  
+  // set the corresponding bits in the interrupt Mask to allow interrupts
+  //UART2_IM_R |= (1u << 4); // allows an interrupt to be sent when RXRIS bit
+                            // in the UARTRIS register(read-only) is set
+  //UART2_IM_R |= (1u << 5); // allows intterupt to be sent when transmitting
+ 
+  // assign interrupt priority. IQR=33, So use PRI8 -> Interrupt 32-35
+  //NVIC_PRI8_R |= (NVIC_PRI8_INT33_M & (1u << 14)); // SET priority to 2
+  // enable the interrupt to be serviced
+ // NVIC_EN1_R |= (1u << 1);      // sets interrupt 33 to be enabled
+  
+  //Enable the UART
+  UART2_CTL_R |= (UART_CTL_RXE | UART_CTL_TXE | UART_CTL_UARTEN); // enable receive, transmit, and uart
+  
+}
+
+
+ // send char to via UART
+void Send_UART_Char(unsigned char c){       
+  
+  // make sure any previous transmission has ended
+  while((UART2_FR_R & UART_FR_TXFF) != 0);   // WAIT IF FIFO IS FULL EMPTY
+    UART2_DR_R = c;
+}
+
+
+ // recieve data from UART
+char Receive_UART(void){       
+ 
+  char c;
+  // make sure fifo is not empty to begin recieving
+  while( (UART2_FR_R & UART_FR_RXFE) != 0);      // wait if the Fifo is empty
+  c = UART2_DR_R;  
+  return c;
+}
+
+// sends a string VIA uart
+void print_string_UART(unsigned char *c)     
+{
+  while(*c){
+    Send_UART_Char(*(c++));
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -532,6 +800,7 @@ void WTIMER0(void){
 }
 
 
+// NOT NEEDED ANYMORE
 // using PC4 -> MUX 7 in AFSEL -> 32/64 Wide Timer / PWM 0
 // using periodic count down timer
 // uses PLL so 1 = 1.25e-8 secs
@@ -584,4 +853,26 @@ void WTIMER0_Period_Init(void)
   
 }
 
-
+/*
+void QUANTIZER(uint8_t sample_source_sel, uint8_t sample_rate_sel )
+{
+  switch(lfo_source)
+  {
+  case 1: // this is the random from an external switch
+    switch(){
+      case 
+      
+    }
+    
+  default:      // this is the LFO
+    
+    
+    
+    
+    
+    
+  }
+  
+  
+}
+*/
