@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <arm_math.h>
 #include <math.h>
+#include <time.h>
 #include <stdlib.h>
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
@@ -27,7 +28,6 @@ void ADC0SS1_Handler(void);
 void ADC1SS1_Handler(void);
 void ADC0_SS1_Init(void);
 void ADC1_SS1_Init(void);
-void SSI_0_Init(void);
 void delay(unsigned long time);
 void PortF_init(void);
 void PortE_Init(void);
@@ -42,8 +42,14 @@ void PWM0_0_Handler(void);
 void WTIMER0(void);
 void WTIMER0_Period_Init(void);
 
+
+int random_number(int min_num, int max_num);
+
+
 unsigned long led;
 unsigned int time_10ms = 160000;
+
+uint16_t RND;
 
 volatile static uint16_t EXPO_CONV_SAMPLE;
 volatile static uint16_t OCT_RANGE_SEL;
@@ -57,23 +63,21 @@ volatile static uint16_t OCTAVE_START;
 volatile static uint16_t OCTAVE_START_DEFAULT = 4;
 volatile static uint8_t OCTAVE_RANGE = 1;
 
-volatile uint8_t sample_src_switch = 0;
-volatile uint8_t sample_rate_switch = 0;
-volatile uint8_t quant_to_hold = 0;
+volatile bool sample_src_switch = false;
+volatile bool sample_rate_switch = false;
+//volatile bool quant_to_hold = false;
 
+uint16_t *ptr_LFO = LFO_SAMPLE;
 
 // OCTAVE RANGE VARIABLES
 uint8_t span_offset = 0; 
-//volatile static unsigned long POT_SAMPLES;
-//volatile static int int_count = 0;
 
-//volatile unsigned long temp_rate;
 float temp_rate;
 volatile static unsigned long store;
 unsigned long LOAD_VAL = 13000;     //6500 gives 500hz   // MAX value is 2^16 = 65536
 unsigned long LOAD_CMPA;
 unsigned long LOAD_CMPB;
-unsigned long old_sample = 0.0;
+
 
 bool stable_sample = false;
 
@@ -95,12 +99,25 @@ volatile static char midi[10][12] ={{0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x0
 #define M_PI 3.14159265358979323846
 #endif
 
+enum top_level_state
+{
+  quantizer;
+  sample;
+  expo_convert;
+  midi_out
+};
+
+top_level_state TOP_STATES = quantizer;
+
+
 
 int main()
 {
- // NVIC_FPCC_R |= (1u << 31) | (1u << 30);
+// NEED TO CHANGE THIS TO NUMBER TO AVOID DIVIDING
 LOAD_CMPA = (LOAD_VAL/2);
 LOAD_CMPB = (LOAD_VAL*75)/(100);
+
+
 /**********************  INITIALIZERS  *********************/
   ROM_FPULazyStackingEnable();
   ROM_FPUEnable();
@@ -116,16 +133,41 @@ LOAD_CMPB = (LOAD_VAL*75)/(100);
   PWM0_Init();
   ADC0_SS1_Init();
   ADC1_SS1_Init();
-  SSI_0_Init();
-  //WTIMER0(); 
- // WTIMER0_Period_Init();
+
   
 /**********************************************************/
 
 
   while(1){
-  //sample_rate(SAMPLE_RATE);
-    //print_string_UART("ab");
+    
+
+  switch(TOP_STATES)
+  {
+  case quantizer:       ////////////////////////////////////////
+    
+    if(sample_src_switch)       // uses rnd
+    {
+     // wanna use a pointer to global variables to avoid checking for changes
+      RND = random_number(0,4095);
+    }
+        
+    if(quant_to_hold){  
+          // use global variable pointer
+      //external trigger  
+    }   
+  
+      
+    
+    
+    
+    
+    
+  case sample_hold:     ////////////////////////////////////////////
+    
+    
+    
+  }
+  
     
   }
   
@@ -208,24 +250,25 @@ void PortC_Init(void)
   SYSCTL_RCGCGPIO_R |= (1u << 2);        // enable clock for port C
   //SysTick_wait_time(10000);// allow for clock to stabilize
   delay(1000);
-  GPIO_PORTC_DIR_R |= (1 << 5);        // set pin 5 to output. set pin 4,6,7 to input
+  GPIO_PORTC_DIR_R &= ~(1 << 5);        // set pin 4,5,6,7 to input
   GPIO_PORTC_AMSEL_R &= 0x00;   // disable analog function
   GPIO_PORTC_DEN_R |= (1 << 4) | (1 << 5)| (1 << 6) | (1 << 7);       // enable digital functionality on pin
-  GPIO_PORTC_AFSEL_R |=  (1 << 5);      // making sure alt funtionality is selected 
-  GPIO_PORTC_PCTL_R |=  (7 << 20);
+  //GPIO_PORTC_AFSEL_R |=  (1 << 5);      // making sure alt funtionality is selected 
+  //GPIO_PORTC_PCTL_R |=  (7 << 20);
   
-  GPIO_PORTC_PDR_R |= (1 << 4) | (1 << 6) | (1 << 7);         // allows for positive logic on the pin
+  GPIO_PORTC_PDR_R |= (1 << 4) | (1 <, 5) | (1 << 6) | (1 << 7);         // allows for positive logic on the pin
   
   // ********switch triggers*******
-  GPIO_PORTC_IM_R &= ~( (1 << 4) | (1 << 7));
-  GPIO_PORTC_IS_R &= ~( (1 << 4) | (1 << 7)); 
-  GPIO_PORTC_RIS_R |= (1 << 4) | (1 << 7);
+  GPIO_PORTC_IM_R &= ~( (1 << 4) | (1 << 7) | (1 << 5));
+  GPIO_PORTC_IS_R &= ~( (1 << 4) | (1 << 7)| (1 << 5)); 
+  GPIO_PORTC_RIS_R |= (1 << 4) | (1 << 7)| (1 << 5);
   GPIO_PORTC_IBE_R |= (1 << 4) | (1 << 7);      // Interrupt on both edges of the switch
+  GPIO_PORTC_IEV_R |= (1 << 5);         // ENABLE INTERRUPT ON RISING EDGE
   
   
   
   
-  GPIO_PORTC_ADCCTL_R |= (1 << 6);     // CONFIGURE PC6 TO TRIGGER ADC
+  GPIO_PORTC_ADCCTL_R |= (1 << 6);     // CONFIGURE PC6 TO TRIGGER ADC1
   
   // ********************* GPIO TRIGGER ADC ***************** //
 //  To prevent false interrupts, the following steps should be taken when re-configuring GPIO
@@ -254,27 +297,26 @@ void GPIOPortC_Handler(void){
 
   uint8_t data = GPIO_PORTC_DATA_R & 0xFF;
   
-  if(data == 0x10)      // sampling source switch set to LFO
-    sample_src_switch = 1;
-  else
-    sample_src_switch = 0;
- 
-  if(data == 0x80)     // QUANT OR SAMPLE AND HOLD SWITCH. PC7
-    quant_to_hold = 1;
-  else
-    quant_to_hold = 0;
-
-
-
   
+  if(data&0x10)      // sampling source switch set to LFO
+    sample_src_switch = true;   // rnd
+  else
+    sample_src_switch = false;  // lfo,--> default
+ 
+  if(data&0x80)     // QUANT OR SAMPLE AND HOLD SWITCH. PC7
+    TOP_STATES = quantizer;       // quantizer
+  else
+    TOP_STATES = sample;      //sample&hold
+
+  if(data&0x20)
+    // use switch to trigger ADC sample
+    
 }
 
- // configuring ADC0, SS1, AIN0,1&2 -> PE3, PE2, PE1
+
+// configuring ADC0, SS1, AIN0,1&2 -> PE3, PE2, PE1
 // uses PWM
 void ADC0_SS1_Init(void) {
-  
-  
-  /***************************ADC INITIALIZATION******************************/
   // Enable the ADC clock using the RCGCADC register 
  
   SYSCTL_RCGCADC_R |= (1 << 0);        //SELECTS ADC0
@@ -301,10 +343,7 @@ void ADC0_SS1_Init(void) {
   
   //If interrupts are to be used, set the corresponding MASK bit in the ADCIM register.
   ADC0_IM_R |= (1 << 1);        // allow interrupts to be sent for sequencer 3 
- 
-  // set the sampling rate to 1ksps (1 kilo samples per sec)
-  //ADC0_PC_R |= 0x1;
-  
+
   //assign priority. IRQ = 15
   ADC0_SSPRI_R |= (2 << 4);    // ASSIGN priority of 2 to SS1
   NVIC_PRI3_R |= (0x5u << 29);    // Used a mask to set the priority to 5
@@ -373,7 +412,6 @@ void ADC0SS1_Handler(void){
     else if((span_pot_incr * 8) <= 4100 && OCT_RANGE_SEL >= (span_pot_incr*7) && span_offset != 8)
       span_offset = 8;          
 
-    
     
   GPIO_PORTF_DATA_R ^= (1 << 3); // green 
 }
@@ -852,67 +890,75 @@ void WTIMER0_Period_Init(void)
 //event. To re-enable the timer, repeat the sequence. A timer configured in Periodic mode reloads
 //the timer and continues counting after the time-out event.
 
-   
-    
   
 }
 
-<<<<<<< HEAD
-/*
+
 void QUANTIZER(uint8_t sample_source_sel, uint8_t sample_rate_sel )
 {
-  switch(lfo_source)
+//  switch(lfo_source)
+//  {
+//  case 1: // this is the random from an external switch
+//    switch(){
+//      case 
+//      
+//    }
+//    
+//  default:      // this is the LFO
+//  }
+  
+  switch(top_level_state)
   {
-  case 1: // this is the random from an external switch
-    switch(){
-      case 
-      
+  case quantizer:
+    
+    if(rnd == true)
+    {
+     // wanna use a pointer to global variables 
     }
+    else{        // lfo is default
+      // use pure global
+    }
+        
+    if (external_trigger){  
+          // use global variable pointer
+      }
+    else {     // 555 is default
+            
+    }
+        
+  
+      
     
-  default:      // this is the LFO
     
     
     
+    
+  case sample_hold:
     
     
     
   }
   
   
-}
-*/
-=======
-/*--------------------------------------------------------- SPI INITALIZATION -----------------------------------------------------------------------*/
-void SSI_0_Init(void) {
- 
-  SYSCTL_RCGCSSI_R |= (0x1 << 0); // SSI Module 0 Run Mode Clock Gate Controll: ENABLED 
-  delay(1000);
-  SYSCTL_RCGCGPIO_R |= (0x1 << 0); // I/O Run Mode Clock Gate Controll: PORT A ENABLED
-  delay(1000);
-  GPIO_PORTA_AFSEL_R |= (0x1 << 1) | (0x1 << 2) | (0x1 << 3); // Set Pins PA 2,3,4 to SSI mode
-  GPIO_PORTA_PCTL_R |= (0x2 << 4) | (0x2 << 8) | (0x2 << 12); // GPIO port controll 
-  GPIO_PORTA_DEN_R |= (0x1 << 1) | (0x1 << 2) | (0x1 << 3);
-/* *******In addition, the drive strength,
-drain select and pull-up/pull-down functions must be configured. Refer to “General-Purpose
-Input/Outputs (GPIOs)” on page 649 for more information.
-  
-  Note: Pull-ups can be used to avoid unnecessary toggles on the SSI pins, which can take the
-slave to a wrong state. In addition, if the SSIClk signal is programmed to steady state
-High through the SPO bit in the SSICR0 register, then software must also configure the
-GPIO port pin corresponding to the SSInClk signal as a pull-up in the GPIO Pull-Up
-Select (GPIOPUR) register. ****** */
-  SSI0_CR1_R |= (0x1 << 1) | (0x0 << 2 ); // SSI OPERATIONS ENABLED, SET AS MASTER 
-  SSI0_CC_R |= (0x5 << 0); //PIOSC CLOCK SELECTED 
-  SSI0_CPSR_R |= (0x2 << 0 ); // SSI0_CLK = SysCLK / (CPDVSR *(1+SCR)) SPDVSR = 2-254
-  SSI0_CR0_R |= (0x7 << 0)|(0x0 << 4)|(0x1 << 8); //SELECT SSI FRAM FORMAT | SSI CLOCK PHASE | SSI0_CLK = SysCLK / (CPDVSR *(1+SCR)); SCR = 0-255 (Bits 8-15)         
-  /*¦ 
-  Serial clock rate (SCR)
-¦ Desired clock phase/polarity, if using Freescale SPI mode (SPH and SPO)
-¦ The protocol mode: Freescale SPI, TI SSF, MICROWIRE (FRF)
-¦ The data size (DSS)*/
   
 }
 
 
 
->>>>>>> 5db2417bc88c3700654c03891319d3e41eab8162
+int random_number(int min_num, int max_num)
+{
+    int result = 0, low_num = 0, hi_num = 0;
+    if(min_num < max_num)
+    {
+        low_num=min_num;
+        hi_num = max_num + 1; // this is done to include max_num in output.
+    }
+    else
+    {
+        low_num = max_num + 1;// this is done to include max_num in output.
+        hi_num = min_num;
+    }
+    srand(time(NULL));
+    result = (rand()%(hi_num-low_num))+low_num;
+    return result;
+}
